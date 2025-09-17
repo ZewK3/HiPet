@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiPet - Support Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/support.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="support-login-screen" class="support-login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fas fa-headset"></i>
+                    <span>HiPet Support</span>
+                </div>
+                <h2>Đăng nhập hỗ trợ</h2>
+                <p>Vui lòng đăng nhập để truy cập hệ thống hỗ trợ khách hàng</p>
+            </div>
+            
+            <form id="support-login-form" class="login-form">
+                <div class="form-group">
+                    <label for="support-email">Email hỗ trợ viên</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="support-email" name="email" required placeholder="support@hipet.com">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="support-password">Mật khẩu</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="support-password" name="password" required placeholder="••••••••">
+                        <button type="button" class="password-toggle" onclick="togglePassword('support-password')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox">
+                        <input type="checkbox" id="support-remember">
+                        <span class="checkmark"></span>
+                        Ghi nhớ đăng nhập
+                    </label>
+                    <a href="#" class="forgot-password">Quên mật khẩu?</a>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-headset"></i>
+                    Đăng nhập Support
+                </button>
+                
+                <div class="status-indicator">
+                    <div class="status online">
+                        <i class="fas fa-circle"></i>
+                        <span>Sẵn sàng hỗ trợ</span>
+                    </div>
+                </div>
+            </form>
+            
+            <div class="login-footer">
+                <p><a href="../../index.html">← Quay lại trang chủ</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Dashboard (Hidden initially) -->
+    <div id="support-dashboard" style="display: none;">
+    <!-- Navigation -->
+    <nav class="support-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-headset"></i>
+                <span>HiPet Support</span>
+            </div>
+            <div class="nav-user">
+                <div class="support-status">
+                    <span class="status-indicator online"></span>
+                    <span>Online</span>
+                </div>
+                <span id="support-name">Support User</span>
+                <button onclick="logout()" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Đăng xuất
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-menu">
+            <div class="menu-item active" data-section="tickets">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Tickets</span>
+                <span class="badge" id="pending-tickets-count">0</span>
+            </div>
+            <div class="menu-item" data-section="live-chat">
+                <i class="fas fa-comments"></i>
+                <span>Live Chat</span>
+                <span class="badge" id="active-chats-count">0</span>
+            </div>
+            <div class="menu-item" data-section="knowledge-base">
+                <i class="fas fa-book"></i>
+                <span>Knowledge Base</span>
+            </div>
+            <div class="menu-item" data-section="users">
+                <i class="fas fa-users"></i>
+                <span>Người dùng</span>
+            </div>
+            <div class="menu-item" data-section="reports">
+                <i class="fas fa-chart-line"></i>
+                <span>Báo cáo</span>
+            </div>
+            <div class="menu-item" data-section="settings">
+                <i class="fas fa-cog"></i>
+                <span>Cài đặt</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Tickets Section -->
+        <section id="tickets" class="content-section active">
+            <div class="section-header">
+                <h1>Quản lý Tickets</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="createTicket()">
+                        <i class="fas fa-plus"></i>
+                        Tạo ticket mới
+                    </button>
+                    <button class="btn-secondary" onclick="refreshTickets()">
+                        <i class="fas fa-sync-alt"></i>
+                        Làm mới
+                    </button>
+                </div>
+            </div>
+
+            <!-- Ticket Stats -->
+            <div class="stats-grid">
+                <div class="stat-card new">
+                    <div class="stat-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="new-tickets">0</h3>
+                        <p>Tickets mới</p>
+                    </div>
+                </div>
+                <div class="stat-card in-progress">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="in-progress-tickets">0</h3>
+                        <p>Đang xử lý</p>
+                    </div>
+                </div>
+                <div class="stat-card resolved">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="resolved-tickets">0</h3>
+                        <p>Đã giải quyết</p>
+                    </div>
+                </div>
+                <div class="stat-card urgent">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="urgent-tickets">0</h3>
+                        <p>Khẩn cấp</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticket Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <input type="search" id="ticket-search" placeholder="Tìm kiếm tickets...">
+                    <select id="ticket-status-filter">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="new">Mới</option>
+                        <option value="in_progress">Đang xử lý</option>
+                        <option value="resolved">Đã giải quyết</option>
+                        <option value="closed">Đã đóng</option>
+                    </select>
+                    <select id="ticket-priority-filter">
+                        <option value="">Tất cả mức độ</option>
+                        <option value="low">Thấp</option>
+                        <option value="medium">Trung bình</option>
+                        <option value="high">Cao</option>
+                        <option value="urgent">Khẩn cấp</option>
+                    </select>
+                    <select id="ticket-category-filter">
+                        <option value="">Tất cả danh mục</option>
+                        <option value="account">Tài khoản</option>
+                        <option value="payment">Thanh toán</option>
+                        <option value="pet">Thú cưng</option>
+                        <option value="technical">Kỹ thuật</option>
+                        <option value="other">Khác</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tickets List -->
+            <div class="tickets-container">
+                <div class="tickets-grid" id="tickets-grid">
+                    <!-- Tickets will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="tickets-pagination">
+                <!-- Pagination will be generated here -->
+            </div>
+        </section>
+
+        <!-- Live Chat Section -->
+        <section id="live-chat" class="content-section">
+            <div class="section-header">
+                <h1>Live Chat</h1>
+                <div class="header-actions">
+                    <div class="chat-status">
+                        <label class="switch">
+                            <input type="checkbox" id="chat-availability" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span>Sẵn sàng nhận chat</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-layout">
+                <!-- Active Chats List -->
+                <div class="chat-sidebar">
+                    <h3>Cuộc trò chuyện đang hoạt động</h3>
+                    <div class="chat-list" id="active-chats-list">
+                        <!-- Active chats will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Chat Window -->
+                <div class="chat-window">
+                    <div class="chat-header" id="chat-header">
+                        <div class="chat-user-info">
+                            <img src="/images/default-avatar.svg" alt="User" class="chat-avatar" id="chat-avatar">
+                            <div class="chat-user-details">
+                                <h4 id="chat-user-name">Chọn một cuộc trò chuyện</h4>
+                                <p id="chat-user-status">Offline</p>
+                            </div>
+                        </div>
+                        <div class="chat-actions">
+                            <button class="chat-action-btn" onclick="transferChat()" title="Chuyển chat">
+                                <i class="fas fa-exchange-alt"></i>
+                            </button>
+                            <button class="chat-action-btn" onclick="endChat()" title="Kết thúc chat">
+                                <i class="fas fa-phone-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="no-chat-selected">
+                            <i class="fas fa-comments"></i>
+                            <p>Chọn một cuộc trò chuyện để bắt đầu</p>
+                        </div>
+                    </div>
+
+                    <div class="chat-input" id="chat-input" style="display: none;">
+                        <div class="chat-input-area">
+                            <button class="attachment-btn" onclick="attachFile()" title="Đính kèm file">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <input type="text" id="message-input" placeholder="Nhập tin nhắn...">
+                            <button class="send-btn" onclick="sendMessage()" title="Gửi tin nhắn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div class="quick-responses">
+                            <button class="quick-response-btn" onclick="insertQuickResponse('Xin chào! Tôi có thể giúp gì cho bạn?')">
+                                Chào hỏi
+                            </button>
+                            <button class="quick-response-btn" onclick="insertQuickResponse('Vui lòng đợi một chút, tôi sẽ kiểm tra thông tin cho bạn.')">
+                                Đang kiểm tra
+                            </button>
+                            <button class="quick-response-btn" onclick="insertQuickResponse('Cảm ơn bạn đã liên hệ với chúng tôi!')">
+                                Cảm ơn
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Knowledge Base Section -->
+        <section id="knowledge-base" class="content-section">
+            <div class="section-header">
+                <h1>Knowledge Base</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="addKnowledgeArticle()">
+                        <i class="fas fa-plus"></i>
+                        Thêm bài viết
+                    </button>
+                </div>
+            </div>
+
+            <!-- Knowledge Base Search -->
+            <div class="kb-search">
+                <input type="search" id="kb-search" placeholder="Tìm kiếm trong knowledge base...">
+                <button class="search-btn" onclick="searchKnowledgeBase()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <!-- Knowledge Base Categories -->
+            <div class="kb-categories">
+                <div class="kb-category" data-category="account">
+                    <i class="fas fa-user"></i>
+                    <h3>Tài khoản</h3>
+                    <p>Hướng dẫn về tài khoản và đăng nhập</p>
+                </div>
+                <div class="kb-category" data-category="pets">
+                    <i class="fas fa-paw"></i>
+                    <h3>Thú cưng</h3>
+                    <p>Thông tin về đăng bán và mua thú cưng</p>
+                </div>
+                <div class="kb-category" data-category="payment">
+                    <i class="fas fa-credit-card"></i>
+                    <h3>Thanh toán</h3>
+                    <p>Hướng dẫn về nạp tiền và rút tiền</p>
+                </div>
+                <div class="kb-category" data-category="safety">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>An toàn</h3>
+                    <p>Tips về giao dịch an toàn</p>
+                </div>
+            </div>
+
+            <!-- Knowledge Base Articles -->
+            <div class="kb-articles" id="kb-articles">
+                <!-- Articles will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Users Section -->
+        <section id="users" class="content-section">
+            <div class="section-header">
+                <h1>Quản lý người dùng</h1>
+                <div class="header-actions">
+                    <button class="btn-secondary" onclick="exportUserData()">
+                        <i class="fas fa-download"></i>
+                        Xuất dữ liệu
+                    </button>
+                </div>
+            </div>
+
+            <!-- User Search -->
+            <div class="filters">
+                <div class="filter-group">
+                    <input type="search" id="user-search" placeholder="Tìm kiếm người dùng...">
+                    <select id="user-status-filter">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="active">Hoạt động</option>
+                        <option value="blocked">Bị khóa</option>
+                        <option value="suspended">Tạm khóa</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ảnh</th>
+                            <th>Tên</th>
+                            <th>Email</th>
+                            <th>Số điện thoại</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tham gia</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <!-- Users data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="users-pagination">
+                <!-- Pagination will be generated here -->
+            </div>
+        </section>
+
+        <!-- Reports Section -->
+        <section id="reports" class="content-section">
+            <div class="section-header">
+                <h1>Báo cáo Support</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="generateSupportReport()">
+                        <i class="fas fa-chart-line"></i>
+                        Tạo báo cáo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Report Cards -->
+            <div class="reports-grid">
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3>Hiệu suất hỗ trợ</h3>
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <div class="report-metrics">
+                        <div class="metric">
+                            <span class="metric-value" id="avg-response-time">2.5</span>
+                            <span class="metric-label">Phút phản hồi TB</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value" id="resolution-rate">95</span>
+                            <span class="metric-label">% Giải quyết</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value" id="satisfaction-score">4.8</span>
+                            <span class="metric-label">Điểm hài lòng</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3>Thống kê hôm nay</h3>
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="report-metrics">
+                        <div class="metric">
+                            <span class="metric-value" id="today-tickets">12</span>
+                            <span class="metric-label">Tickets xử lý</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value" id="today-chats">25</span>
+                            <span class="metric-label">Chat sessions</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value" id="online-hours">8</span>
+                            <span class="metric-label">Giờ online</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3>Top vấn đề</h3>
+                        <i class="fas fa-list-ol"></i>
+                    </div>
+                    <div class="top-issues" id="top-issues">
+                        <!-- Top issues will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3>Phản hồi gần đây</h3>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="recent-feedback" id="recent-feedback">
+                        <!-- Recent feedback will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings" class="content-section">
+            <div class="section-header">
+                <h1>Cài đặt Support</h1>
+            </div>
+
+            <div class="settings-grid">
+                <div class="settings-card">
+                    <h3>Cài đặt cá nhân</h3>
+                    <div class="setting-item">
+                        <label>Trạng thái mặc định</label>
+                        <select id="default-status">
+                            <option value="available">Sẵn sàng</option>
+                            <option value="busy">Bận</option>
+                            <option value="away">Vắng mặt</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label>Số chat tối đa cùng lúc</label>
+                        <input type="number" id="max-concurrent-chats" value="5" min="1" max="10">
+                    </div>
+                    <div class="setting-item">
+                        <label>Thông báo âm thanh</label>
+                        <label class="switch">
+                            <input type="checkbox" id="sound-notifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Phản hồi tự động</h3>
+                    <div class="setting-item">
+                        <label>Tin nhắn chào mừng</label>
+                        <textarea id="welcome-message" rows="3">Xin chào! Cảm ơn bạn đã liên hệ với HiPet. Tôi có thể giúp gì cho bạn?</textarea>
+                    </div>
+                    <div class="setting-item">
+                        <label>Tin nhắn vắng mặt</label>
+                        <textarea id="away-message" rows="3">Hiện tại tôi đang vắng mặt. Vui lòng để lại tin nhắn và tôi sẽ phản hồi sớm nhất có thể.</textarea>
+                    </div>
+                    <div class="setting-item">
+                        <label>Tự động gửi tin nhắn chào</label>
+                        <label class="switch">
+                            <input type="checkbox" id="auto-welcome" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Thông báo</h3>
+                    <div class="setting-item">
+                        <label>Thông báo ticket mới</label>
+                        <label class="switch">
+                            <input type="checkbox" id="ticket-notifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>Thông báo chat mới</label>
+                        <label class="switch">
+                            <input type="checkbox" id="chat-notifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>Email báo cáo hàng ngày</label>
+                        <label class="switch">
+                            <input type="checkbox" id="daily-report-email">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-actions">
+                <button class="btn-primary" onclick="saveSupportSettings()">
+                    <i class="fas fa-save"></i>
+                    Lưu cài đặt
+                </button>
+                <button class="btn-secondary" onclick="resetSupportSettings()">
+                    <i class="fas fa-undo"></i>
+                    Khôi phục mặc định
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <!-- Create Ticket Modal -->
+    <div id="create-ticket-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tạo ticket mới</h3>
+                <span class="close" onclick="closeModal('create-ticket-modal')">&times;</span>
+            </div>
+            <form id="create-ticket-form" class="modal-body">
+                <div class="form-group">
+                    <label>Tiêu đề</label>
+                    <input type="text" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label>Người dùng</label>
+                    <select name="userId" required>
+                        <option value="">Chọn người dùng</option>
+                        <!-- Users will be loaded here -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Danh mục</label>
+                    <select name="category" required>
+                        <option value="account">Tài khoản</option>
+                        <option value="payment">Thanh toán</option>
+                        <option value="pet">Thú cưng</option>
+                        <option value="technical">Kỹ thuật</option>
+                        <option value="other">Khác</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mức độ ưu tiên</label>
+                    <select name="priority" required>
+                        <option value="low">Thấp</option>
+                        <option value="medium">Trung bình</option>
+                        <option value="high">Cao</option>
+                        <option value="urgent">Khẩn cấp</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mô tả</label>
+                    <textarea name="description" rows="4" required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('create-ticket-modal')">Hủy</button>
+                    <button type="submit" class="btn-primary">Tạo ticket</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ticket Detail Modal -->
+    <div id="ticket-detail-modal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Chi tiết ticket</h3>
+                <span class="close" onclick="closeModal('ticket-detail-modal')">&times;</span>
+            </div>
+            <div class="modal-body" id="ticket-detail-content">
+                <!-- Ticket details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Knowledge Article Modal -->
+    <div id="kb-article-modal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Thêm bài viết Knowledge Base</h3>
+                <span class="close" onclick="closeModal('kb-article-modal')">&times;</span>
+            </div>
+            <form id="kb-article-form" class="modal-body">
+                <div class="form-group">
+                    <label>Tiêu đề</label>
+                    <input type="text" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label>Danh mục</label>
+                    <select name="category" required>
+                        <option value="account">Tài khoản</option>
+                        <option value="pets">Thú cưng</option>
+                        <option value="payment">Thanh toán</option>
+                        <option value="safety">An toàn</option>
+                        <option value="other">Khác</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Nội dung</label>
+                    <textarea name="content" rows="10" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tags (phân cách bằng dấu phẩy)</label>
+                    <input type="text" name="tags" placeholder="ví dụ: đăng ký, tài khoản, mật khẩu">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('kb-article-modal')">Hủy</button>
+                    <button type="submit" class="btn-primary">Lưu bài viết</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Đang tải...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="../assets/js/support.js"></script>
+</body>
+</html>

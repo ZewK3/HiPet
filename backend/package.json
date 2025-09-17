@@ -1,0 +1,25 @@
+{
+  "name": "hipet-backend",
+  "version": "1.0.0",
+  "description": "Backend cho nền tảng mua bán thú cưng HiPet",
+  "main": "worker.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler publish",
+    "deploy:staging": "wrangler publish --env staging",
+    "tail": "wrangler tail",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pet-trading",
+    "cloudflare-workers",
+    "api",
+    "backend"
+  ],
+  "author": "HiPet Team",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "dependencies": {}
+}

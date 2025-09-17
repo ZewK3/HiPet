@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z&L PetMart - Nền tảng mua bán thú cưng</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <!-- Left Section: Logo & Brand -->
+                <div class="header-left">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                                <circle cx="20" cy="20" r="18" fill="url(#gradient)" stroke="#fff" stroke-width="2"/>
+                                <text x="20" y="26" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">ZLP</text>
+                                <defs>
+                                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#f8bbd9"/>
+                                        <stop offset="100%" style="stop-color:#ffc0cb"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="logo-text">
+                            <span class="brand-name">Z&L PetMart</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Section: Search Bar -->
+                <div class="header-center">
+                    <div class="search-container">
+                        <div class="search-input-group">
+                            <div class="search-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <input type="text" 
+                                   id="global-search-input" 
+                                   class="search-input"
+                                   placeholder="Tìm kiếm thú cưng, giống, người bán..."
+                                   onkeydown="if(event.key==='Enter') performGlobalSearch()"
+                                   autocomplete="off">
+                        </div>
+                        
+                        <!-- Global Search Suggestions -->
+                        <div class="search-suggestions" id="global-search-suggestions" style="display: none;">
+                            <!-- Global search suggestions will appear here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Section: Navigation & User Actions -->
+                <div class="header-right">
+                    <div class="header-nav">
+                        <!-- Navigation Icons (Facebook style) -->
+                        <div class="nav-icons">
+                            <div class="nav-icon-item" onclick="scrollToSection('pets')" title="Mua bán">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="nav-icon-item" onclick="scrollToSection('services')" title="Dịch vụ">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="nav-icon-item" onclick="scrollToSection('community')" title="Cộng đồng">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="nav-icon-item" onclick="showWallet()" title="Ví tiền">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                        </div>
+
+                        <!-- User Actions -->
+                        <div class="user-actions">
+                            <!-- Notifications (logged in only) -->
+                            <div class="action-icon notification-center" id="notification-center" style="display: none;" title="Thông báo">
+                                <i class="fas fa-bell"></i>
+                                <span class="notification-badge">3</span>
+                            </div>
+
+                            <!-- Messages -->
+                            <div class="action-icon messages-center" id="messages-center" style="display: none;" title="Tin nhắn">
+                                <i class="fas fa-comment-dots"></i>
+                                <span class="message-badge">2</span>
+                            </div>
+
+                            <!-- User Menu (logged in) -->
+                            <div class="user-section" id="user-menu" style="display: none;">
+                                <div class="user-avatar-btn">
+                                    <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><circle cx='20' cy='20' r='20' fill='%23ddd'/><circle cx='20' cy='16' r='6' fill='%23999'/><path d='M10 35c0-8 4.5-12 10-12s10 4 10 12' fill='%23999'/></svg>" alt="Avatar" class="user-avatar">
+                                </div>
+                                <div class="user-dropdown">
+                                    <div class="dropdown-header">
+                                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><circle cx='30' cy='30' r='30' fill='%23ddd'/><circle cx='30' cy='24' r='9' fill='%23999'/><path d='M15 52.5c0-12 6.75-18 15-18s15 6 15 18' fill='%23999'/></svg>" alt="Avatar" class="dropdown-avatar">
+                                        <div class="dropdown-user-info">
+                                            <span class="dropdown-user-name" id="dropdown-username">User</span>
+                                            <a href="#" class="see-profile-link">Xem trang cá nhân</a>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown-divider"></div>
+                                    <div class="dropdown-item" onclick="showProfile()">
+                                        <i class="fas fa-user"></i>
+                                        <span>Hồ sơ cá nhân</span>
+                                    </div>
+                                    <div class="dropdown-item" onclick="showMyPets()">
+                                        <i class="fas fa-heart"></i>
+                                        <span>Thú cưng của tôi</span>
+                                    </div>
+                                    <div class="dropdown-item" onclick="showWallet()">
+                                        <i class="fas fa-wallet"></i>
+                                        <span>Ví tiền</span>
+                                    </div>
+                                    <div class="dropdown-item" onclick="showSettings()">
+                                        <i class="fas fa-cog"></i>
+                                        <span>Cài đặt</span>
+                                    </div>
+                                    <div class="dropdown-divider"></div>
+                                    <div class="dropdown-item logout" onclick="logout()">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        <span>Đăng xuất</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Auth Buttons (guests) -->
+                            <div class="auth-section" id="auth-buttons">
+                                <button class="auth-btn login-btn" onclick="showLoginModal()">
+                                    <i class="fas fa-user"></i>
+                                    <span>Đăng nhập</span>
+                                </button>
+                                <button class="auth-btn register-btn" onclick="showRegisterModal()">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>Đăng ký</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Mobile Menu Toggle -->
+                        <div class="mobile-menu-toggle" id="mobile-menu-toggle">
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation (shown when hamburger is clicked) -->
+            <div class="mobile-nav" id="mobile-nav" style="display: none;">
+                <div class="mobile-nav-items">
+                    <div class="mobile-nav-item" onclick="scrollToSection('pets')">
+                        <i class="fas fa-paw"></i>
+                        <span>Mua bán</span>
+                    </div>
+                    <div class="mobile-nav-item" onclick="scrollToSection('services')">
+                        <i class="fas fa-heart"></i>
+                        <span>Dịch vụ</span>
+                    </div>
+                    <div class="mobile-nav-item" onclick="scrollToSection('community')">
+                        <i class="fas fa-users"></i>
+                        <span>Cộng đồng</span>
+                    </div>
+                    <div class="mobile-nav-item" onclick="scrollToSection('contact')">
+                        <i class="fas fa-phone"></i>
+                        <span>Liên hệ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Header -->
+    <div class="mobile-header" id="mobile-header">
+        <div class="mobile-header-content">
+            <!-- Mobile Header Top -->
+            <div class="mobile-header-top">
+                <!-- Logo -->
+                <div class="mobile-logo">
+                    <div class="logo-icon">
+                        <svg width="30" height="30" viewBox="0 0 40 40" fill="none">
+                            <circle cx="20" cy="20" r="18" fill="url(#mobileGradient)" stroke="#fff" stroke-width="2"/>
+                            <text x="20" y="26" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">ZLP</text>
+                            <defs>
+                                <linearGradient id="mobileGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#f8bbd9"/>
+                                    <stop offset="100%" style="stop-color:#ffc0cb"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <span class="brand-name">Z&L PetMart</span>
+                </div>
+
+                <!-- Search -->
+                <div class="mobile-search">
+                    <div class="mobile-search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="mobile-search-input" placeholder="Tìm kiếm...">
+                        <button type="button" class="mobile-search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile User Section -->
+                <div class="mobile-user-section" id="mobile-user-section">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Tìm kiếm người bạn đồng hành hoàn hảo</h1>
+                <p>Nền tảng mua bán thú cưng uy tín và an toàn nhất Việt Nam</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary btn-large" onclick="scrollToSection('pets')">
+                        <i class="fas fa-search"></i> Tìm thú cưng
+                    </button>
+                    <button class="btn btn-outline btn-large" onclick="scrollToSection('sell')">
+                        <i class="fas fa-plus"></i> Đăng tin bán
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modern Advertisement Banner -->
+    <section class="ad-banner modern-ad" id="top-banner-ad">
+        <div class="container">
+            <div class="ad-container premium-ad" data-ad-type="banner" data-ad-position="top">
+                <div class="ad-content">
+                    <div class="ad-visual">
+                        <i class="fas fa-heart"></i>
+                        <div class="ad-sparkles">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <div class="ad-text">
+                        <h4>🎯 Quảng cáo dành cho bạn</h4>
+                        <p>Khám phá những sản phẩm và dịch vụ tuyệt vời cho thú cưng của bạn</p>
+                    </div>
+                    <button class="ad-cta">Xem ngay</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Pets Carousel Section -->
+    <section class="featured-carousel-section" id="featured-pets">
+        <div class="container">
+            <div class="carousel-container" id="featured-carousel">
+                <div class="carousel-header">
+                    <div class="carousel-title">
+                        <h2><i class="fas fa-crown"></i> Thú cưng được đề xuất</h2>
+                        <p class="carousel-subtitle">Những bé cưng được lựa chọn đặc biệt cho bạn hôm nay</p>
+                    </div>
+                    <div class="carousel-controls">
+                        <button class="carousel-btn prev-btn" id="carousel-prev" title="Trước">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="carousel-btn next-btn" id="carousel-next" title="Tiếp">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Loading Overlay -->
+                <div class="carousel-loading-overlay" id="carousel-loading">
+                    <div class="loading-content">
+                        <div class="loading-spinner">
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-ring"></div>
+                        </div>
+                        <h3 class="loading-title">Đang tải thú cưng...</h3>
+                        <p class="loading-subtitle">Chúng tôi đang tìm những bé cưng tuyệt vời nhất cho bạn</p>
+                        <div class="loading-progress">
+                            <div class="progress-bar" id="loading-progress-bar"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-wrapper">
+                    <div class="carousel-track" id="carousel-track">
+                        <!-- Carousel items will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="carousel-indicators" id="carousel-indicators">
+                    <!-- Indicators will be populated by JavaScript -->
+                </div>
+                <div class="carousel-footer">
+                    <button class="btn btn-outline view-all-btn" onclick="scrollToSection('pets')">
+                        <i class="fas fa-th"></i> Xem tất cả thú cưng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- All Pets Section - Enhanced -->
+    <section class="pets-section" id="pets">
+        <div class="container">
+            <!-- Section Title (Separate from filters) -->
+            <div class="header-title-group">
+                <h2 class="section-title">
+                    <i class="fas fa-paw title-icon"></i>
+                    Tất cả thú cưng
+                    <span class="pets-count" id="pets-count">(0)</span>
+                </h2>
+                <p class="section-subtitle">Khám phá bộ sưu tập đa dạng các loại thú cưng đáng yêu</p>
+            </div>
+            
+            <!-- Enhanced Section Header -->
+            <div class="section-header enhanced-header">
+                <!-- Advanced Filters Panel -->
+                <div class="advanced-filters-panel" id="advanced-filters-panel">
+                    <div class="filters-grid">
+                        <!-- Type Filter -->
+                        <div class="filter-group">
+                            <select id="type-filter" onchange="filterPets()" title="Loại thú cưng">
+                                <option value="">🐾 Tất cả loại</option>
+                                <option value="dog">🐕 Chó</option>
+                                <option value="cat">🐱 Mèo</option>
+                                <option value="bird">🐦 Chim</option>
+                                <option value="fish">🐠 Cá</option>
+                                <option value="rabbit">🐰 Thỏ</option>
+                                <option value="other">🐾 Khác</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Price Filter -->
+                        <div class="filter-group">
+                            <select id="price-filter" onchange="filterPets()" title="Khoảng giá">
+                                <option value="">💰 Tất cả giá</option>
+                                <option value="0-500000">Dưới 500k</option>
+                                <option value="500000-1000000">500k - 1 triệu</option>
+                                <option value="1000000-3000000">1 - 3 triệu</option>
+                                <option value="3000000-5000000">3 - 5 triệu</option>
+                                <option value="5000000-10000000">5 - 10 triệu</option>
+                                <option value="10000000-999999999">Trên 10 triệu</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Age Filter -->
+                        <div class="filter-group">
+                            <select id="age-filter" onchange="filterPets()" title="Độ tuổi">
+                                <option value="">🎂 Tất cả tuổi</option>
+                                <option value="0-6">Dưới 6 Tháng</option>
+                                <option value="6-12">6-12 Tháng</option>
+                                <option value="12-24">1-2 Năm</option>
+                                <option value="24-36">2-3 Năm</option>
+                                <option value="36-60">3-5 Năm</option>
+                                <option value="60-999">Trên 5 Năm</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Gender Filter -->
+                        <div class="filter-group">
+                            <select id="gender-filter" onchange="filterPets()" title="Giới tính">
+                                <option value="">⚧ Tất cả giới tính</option>
+                                <option value="male">♂️ Đực</option>
+                                <option value="female">♀️ Cái</option>
+                                <option value="unknown">❓ Chưa xác định</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Location Filter -->
+                        <div class="filter-group">
+                            <select id="location-filter" onchange="filterPets()" title="Địa điểm">
+                                <option value="">📍 Tất cả địa điểm</option>
+                                <option value="Hà Nội">Hà Nội</option>
+                                <option value="TP.HCM">TP.HCM</option>
+                                <option value="Đà Nẵng">Đà Nẵng</option>
+                                <option value="Hải Phòng">Hải Phòng</option>
+                                <option value="Cần Thơ">Cần Thơ</option>
+                                <option value="Bình Dương">Bình Dương</option>
+                                <option value="Đồng Nai">Đồng Nai</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Sort Options -->
+                        <div class="filter-group">
+                            <select id="sort-filter" onchange="sortPets()" title="Sắp xếp">
+                                <option value="newest">🕒 Mới nhất</option>
+                                <option value="oldest">📅 Cũ nhất</option>
+                                <option value="price-low">💰 Giá thấp đến cao</option>
+                                <option value="price-high">💎 Giá cao đến thấp</option>
+                                <option value="popular">🔥 Phổ biến nhất</option>
+                                <option value="featured">⭐ Nổi bật</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Reset Button -->
+                        <div class="filter-group">
+                            <button class="btn btn-outline btn-sm" onclick="resetAllFilters()" title="Đặt lại tất cả">
+                                <i class="fas fa-undo"></i> Đặt lại
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Enhanced Search Container -->
+                <div class="pets-search-container">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input 
+                            type="text" 
+                            id="pets-search-input" 
+                            placeholder="Tìm kiếm theo tên, giống, mô tả..." 
+                            onkeyup="searchPets()"
+                            autocomplete="off"
+                        >
+                        <button class="clear-search-btn" id="clear-pets-search" onclick="clearPetsSearch()" style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="search-suggestions" id="pets-search-suggestions" style="display: none;">
+                        <!-- Search suggestions will appear here -->
+                    </div>
+                </div>
+                
+                <!-- Active Filters Display -->
+                <div class="active-filters" id="active-filters" style="display: none;">
+                    <div class="active-filters-list">
+                        <!-- Active filter tags will appear here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pets Grid/List Container -->
+            <div class="pets-content">
+                <!-- Results Summary -->
+                <div class="results-summary" id="results-summary">
+                    <span class="results-text">Hiển thị <strong id="showing-count">0</strong> trên tổng <strong id="total-count">0</strong> thú cưng</span>
+                    <div class="results-actions">
+                        <button class="btn btn-outline btn-sm" onclick="refreshPets()" title="Làm mới danh sách">
+                            <i class="fas fa-sync-alt"></i> Làm mới
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="pet-grid" id="pet-list">
+                    <!-- Pet items will be loaded here -->
+                </div>
+                
+                <!-- Loading States -->
+                <div class="loading" id="loading" style="display: none;">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <span>Đang tải thú cưng...</span>
+                </div>
+                
+                <!-- Empty State -->
+                <div class="empty-state" id="empty-state" style="display: none;">
+                    <div class="empty-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Không tìm thấy thú cưng nào</h3>
+                    <p>Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</p>
+                    <button class="btn btn-primary" onclick="resetAllFilters()">
+                        <i class="fas fa-undo"></i> Đặt lại bộ lọc
+                    </button>
+                </div>
+                
+                <!-- Load More Button -->
+                <div class="load-more-container" id="load-more-container" style="display: none;">
+                    <button class="btn btn-outline load-more-btn" onclick="loadMorePets()" id="load-more-btn">
+                        <i class="fas fa-plus"></i> Xem thêm thú cưng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pets-content">
+                <div class="pet-grid" id="pet-list">
+                    <!-- Pet items will be loaded here -->
+                </div>
+                <div class="loading" id="loading" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i> Đang tải...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Sellers Section -->
+    <section class="top-sellers-section">
+        <div class="container">
+            <div class="top-sellers">
+                <h3><i class="fas fa-star"></i> Người bán uy tín</h3>
+                <div class="seller-list" id="top-sellers-list">
+                    <!-- Top sellers will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sell Pet Modal - Professional Design -->
+    <div class="modal" id="sell-pet-modal">
+        <div class="modal-content large-modal sell-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-store"></i> Quản lý bán thú cưng</h3>
+                <span class="close" onclick="closeModal('sell-pet-modal')">&times;</span>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="sell-tabs">
+                <div class="tab-nav">
+                    <button class="tab-btn active" onclick="switchSellTab('new-post')">
+                        <i class="fas fa-plus"></i> Đăng tin mới
+                    </button>
+                    <button class="tab-btn" onclick="switchSellTab('my-posts')">
+                        <i class="fas fa-list"></i> Tin đang đăng
+                    </button>
+                    <button class="tab-btn" onclick="switchSellTab('history')">
+                        <i class="fas fa-history"></i> Lịch sử
+                    </button>
+                </div>
+                
+                <!-- New Post Tab -->
+                <div class="tab-content active" id="new-post-tab">
+                    <form id="pet-form" class="pet-form professional">
+                        <!-- Basic Information -->
+                        <div class="form-section">
+                            <h4><i class="fas fa-paw"></i> Thông tin cơ bản</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pet-name">Tên thú cưng *</label>
+                                    <input type="text" id="pet-name" name="name" placeholder="VD: Lucky, Miu..." required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pet-category">Danh mục *</label>
+                                    <select id="pet-category" name="category" required>
+                                        <option value="">Chọn danh mục</option>
+                                        <option value="dog">🐕 Chó</option>
+                                        <option value="cat">🐱 Mèo</option>
+                                        <option value="bird">🐦 Chim</option>
+                                        <option value="fish">🐠 Cá</option>
+                                        <option value="reptile">🦎 Bò sát</option>
+                                        <option value="small_animal">🐹 Động vật nhỏ</option>
+                                        <option value="other">🐾 Khác</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pet-type">Loại/Giống *</label>
+                                    <input type="text" id="pet-type" name="type" placeholder="VD: Golden Retriever" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pet-breed">Giống chi tiết</label>
+                                    <input type="text" id="pet-breed" name="breed" placeholder="VD: Golden Retriever thuần chủng">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pet-gender">Giới tính</label>
+                                    <select id="pet-gender" name="gender">
+                                        <option value="unknown">❓ Không rõ</option>
+                                        <option value="male">♂️ Đực</option>
+                                        <option value="female">♀️ Cái</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pet-age">Tuổi</label>
+                                    <input type="number" id="pet-age" name="age" min="0" max="100" placeholder="6">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pet-age-unit">Đơn vị tuổi</label>
+                                    <select id="pet-age-unit" name="age_unit">
+                                        <option value="months" selected>Tháng</option>
+                                        <option value="years">Năm</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pet-size-category">Kích thước</label>
+                                    <select id="pet-size-category" name="size_category">
+                                        <option value="small">Nhỏ</option>
+                                        <option value="medium" selected>Trung bình</option>
+                                        <option value="large">Lớn</option>
+                                        <option value="giant">Rất lớn</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Health Information -->
+                        <div class="form-section">
+                            <h4><i class="fas fa-heart"></i> Thông tin sức khỏe</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pet-vaccination-status">Tình trạng tiêm chủng</label>
+                                    <select id="pet-vaccination-status" name="vaccination_status">
+                                        <option value="unknown" selected>Không rõ</option>
+                                        <option value="up_to_date">Đã tiêm đầy đủ</option>
+                                        <option value="partial">Tiêm một phần</option>
+                                        <option value="none">Chưa tiêm</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pet-health-certificate">Giấy chứng nhận sức khỏe</label>
+                                    <select id="pet-health-certificate" name="health_certificate">
+                                        <option value="0" selected>Không có</option>
+                                        <option value="1">Có</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Price & Location -->
+                        <div class="form-section">
+                            <h4><i class="fas fa-dollar-sign"></i> Thông tin bán</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pet-price">Giá bán *</label>
+                                    <input type="number" id="pet-price" name="price" min="0" placeholder="500000" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pet-currency">Tiền tệ</label>
+                                    <select id="pet-currency" name="currency">
+                                        <option value="VND" selected>VND</option>
+                                        <option value="USD">USD</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pet-location">Tỉnh/Thành phố</label>
+                                    <input type="text" id="pet-location" name="location" placeholder="VD: Hà Nội">
+                                </div>
+                                <div class="form-group">
+                                    <label for="pet-city">Quận/Huyện</label>
+                                    <input type="text" id="pet-city" name="city" placeholder="VD: Ba Đình">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="pet-negotiable">Có thể thương lượng</label>
+                                <select id="pet-negotiable" name="negotiable">
+                                    <option value="1" selected>Có</option>
+                                    <option value="0">Không</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="form-section">
+                            <h4><i class="fas fa-align-left"></i> Mô tả</h4>
+                            <div class="form-group">
+                                <label for="pet-description">Mô tả chi tiết</label>
+                                <textarea id="pet-description" name="description" rows="4" 
+                                    placeholder="Mô tả tính cách, sức khỏe, đặc điểm nổi bật..."></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="pet-tags">Tags (từ khóa)</label>
+                                <input type="text" id="pet-tags" name="tags" 
+                                    placeholder="VD: cute, friendly, trained (cách nhau bằng dấu phẩy)">
+                                <small class="form-help">Giúp khách hàng dễ tìm thấy thú cưng của bạn</small>
+                            </div>
+                        </div>
+
+                        <!-- Images -->
+                        <div class="form-section">
+                            <h4><i class="fas fa-camera"></i> Hình ảnh</h4>
+                            <div class="form-group">
+                                <div class="upload-area" onclick="document.getElementById('pet-images').click()">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Nhấp để chọn ảnh hoặc kéo thả vào đây</p>
+                                    <small>Tối đa 5 ảnh, mỗi ảnh không quá 2MB</small>
+                                </div>
+                                <input type="file" id="pet-images" name="images" multiple accept="image/*" style="display: none;">
+                                <div class="image-preview" id="image-preview"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="resetPetForm()">
+                                <i class="fas fa-undo"></i> Làm mới
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-large">
+                                <i class="fas fa-paper-plane"></i> Đăng tin ngay
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- My Posts Tab -->
+                <div class="tab-content" id="my-posts-tab">
+                    <div class="posts-header">
+                        <h4><i class="fas fa-list"></i> Tin đang đăng (3)</h4>
+                        <div class="posts-stats">
+                            <span class="stat-item"><i class="fas fa-eye"></i> 1,234 lượt xem</span>
+                            <span class="stat-item"><i class="fas fa-heart"></i> 89 lượt thích</span>
+                        </div>
+                    </div>
+                    <div class="posts-list" id="active-posts">
+                        <!-- Active posts will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- History Tab -->
+                <div class="tab-content" id="history-tab">
+                    <div class="posts-header">
+                        <h4><i class="fas fa-history"></i> Lịch sử đăng tin</h4>
+                        <div class="filter-options">
+                            <select id="history-filter">
+                                <option value="all">Tất cả</option>
+                                <option value="sold">Đã bán</option>
+                                <option value="expired">Hết hạn</option>
+                                <option value="removed">Đã gỡ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="posts-list" id="history-posts">
+                        <!-- History posts will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Đăng nhập</h3>
+                <span class="close" onclick="closeModal('login-modal')">&times;</span>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Mật khẩu</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-full">Đăng nhập</button>
+                </div>
+                <div class="form-footer">
+                    <p>Chưa có tài khoản? <a href="#" onclick="switchToRegister()">Đăng ký ngay</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="register-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Đăng ký</h3>
+                <span class="close" onclick="closeModal('register-modal')">&times;</span>
+            </div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-name">Họ tên</label>
+                    <input type="text" id="register-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Mật khẩu</label>
+                    <input type="password" id="register-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-phone">Số điện thoại</label>
+                    <input type="tel" id="register-phone" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-full">Đăng ký</button>
+                </div>
+                <div class="form-footer">
+                    <p>Đã có tài khoản? <a href="#" onclick="switchToLogin()">Đăng nhập ngay</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Wallet Modal -->
+    <div class="modal" id="wallet-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Quản lý ví</h3>
+                <span class="close" onclick="closeModal('wallet-modal')">&times;</span>
+            </div>
+            <div class="wallet-content">
+                <div class="balance-info">
+                    <h4>Số dư hiện tại</h4>
+                    <div class="balance-amount" id="modal-balance">0 VNĐ</div>
+                </div>
+                <div class="wallet-actions">
+                    <button class="btn btn-primary" onclick="showDepositForm()">
+                        <i class="fas fa-plus"></i> Nạp tiền
+                    </button>
+                    <button class="btn btn-outline" onclick="showWithdrawForm()">
+                        <i class="fas fa-minus"></i> Rút tiền
+                    </button>
+                </div>
+                <div class="transaction-history">
+                    <h4>Lịch sử giao dịch</h4>
+                    <div id="transaction-list">
+                        <!-- Transaction history will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget" id="chat-widget" style="display: none;">
+        <div class="chat-header">
+            <h4>Tin nhắn</h4>
+            <button class="chat-close" onclick="toggleChat()">&times;</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will be loaded here -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chat-input" placeholder="Nhập tin nhắn...">
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Premium Floating Advertisement -->
+    <div class="floating-ad modern-floating" id="floating-ad" data-ad-type="floating">
+        <div class="ad-content">
+            <button class="ad-close" onclick="closeFloatingAd()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="floating-ad-body ad-placeholder">
+                <div class="ad-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <div class="ad-info">
+                    <h4>✨ Ưu đãi đặc biệt</h4>
+                    <p>Giảm giá 20% cho khách hàng mới</p>
+                </div>
+                <button class="floating-cta">Nhận ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Modern Advertisement -->
+    <section class="ad-banner bottom-ad modern-bottom" id="bottom-banner-ad">
+        <div class="container">
+            <div class="ad-container bottom-premium" data-ad-type="banner" data-ad-position="bottom">
+                <div class="bottom-ad-grid">
+                    <div class="ad-item">
+                        <div class="ad-icon">
+                            <i class="fas fa-paw"></i>
+                        </div>
+                        <div class="ad-content">
+                            <h5>Thức ăn cho thú cưng</h5>
+                            <p>Dinh dưỡng tốt nhất</p>
+                        </div>
+                    </div>
+                    <div class="ad-item">
+                        <div class="ad-icon">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <div class="ad-content">
+                            <h5>Dịch vụ thú y</h5>
+                            <p>Chăm sóc sức khỏe</p>
+                        </div>
+                    </div>
+                    <div class="ad-item">
+                        <div class="ad-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="ad-content">
+                            <h5>Phụ kiện thú cưng</h5>
+                            <p>Đầy đủ tiện nghi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <i class="fas fa-paw"></i>
+                        <span>Z&L PetMart</span>
+                    </div>
+                    <p>Nền tảng mua bán thú cưng uy tín và an toàn nhất Việt Nam</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Liên kết</h4>
+                    <ul>
+                        <li><a href="#home">Trang chủ</a></li>
+                        <li><a href="#pets">Mua thú cưng</a></li>
+                        <li><a href="#sell">Bán thú cưng</a></li>
+                        <li><a href="#contact">Liên hệ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Hỗ trợ</h4>
+                    <ul>
+                        <li><a href="#">Câu hỏi thường gặp</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Điều khoản sử dụng</a></li>
+                        <li><a href="#">Hướng dẫn</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Liên hệ</h4>
+                    <div class="contact-info">
+                        <p><i class="fas fa-phone"></i> 0123 456 789</p>
+                        <p><i class="fas fa-envelope"></i> support@zlpetmart.vn</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Hà Nội, Việt Nam</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Z&L PetMart. Tất cả quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Professional Profile Modal -->
+    <div class="modal" id="profile-modal" style="display: none;">
+        <div class="modal-content profile-modal-content">
+            <div class="modal-header profile-header">
+                <h3><i class="fas fa-user-circle"></i> Hồ sơ cá nhân</h3>
+                <span class="close" onclick="closeModal('profile-modal')">&times;</span>
+            </div>
+            
+            <div class="modal-body profile-body">
+                <!-- Profile View Mode -->
+                <div id="profile-view-mode">
+                    <div class="profile-section avatar-section">
+                        <div class="avatar-container-pro">
+                            <div class="avatar-wrapper">
+                                <img id="current-avatar" src="https://via.placeholder.com/100/ff69b4/ffffff?text=👤" alt="Avatar" class="profile-avatar-pro">
+                                <div class="avatar-overlay" onclick="triggerAvatarUpload()">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Đổi ảnh</span>
+                                </div>
+                                <input type="file" id="avatar-input" accept="image/*" style="display: none;" onchange="handleAvatarChange(event)">
+                            </div>
+                            <div class="verified-badge">
+                                <i class="fas fa-check-circle"></i> Đã xác thực
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-section info-section">
+                        <div class="section-header">
+                            <h4><i class="fas fa-info-circle"></i> Thông tin cá nhân</h4>
+                            <button class="btn-edit-inline" onclick="toggleEditMode()">
+                                <i class="fas fa-edit"></i> Chỉnh sửa
+                            </button>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label><i class="fas fa-user"></i> Họ tên</label>
+                                <span id="profile-display-name">Loading...</span>
+                            </div>
+                            <div class="info-item">
+                                <label><i class="fas fa-envelope"></i> Email</label>
+                                <span id="profile-display-email">Loading...</span>
+                                <small class="readonly-note">Không thể thay đổi</small>
+                            </div>
+                            <div class="info-item">
+                                <label><i class="fas fa-phone"></i> Số điện thoại</label>
+                                <span id="profile-display-phone">Chưa cập nhật</span>
+                            </div>
+                            <div class="info-item">
+                                <label><i class="fas fa-map-marker-alt"></i> Địa chỉ</label>
+                                <span id="profile-display-location">Chưa cập nhật</span>
+                            </div>
+                            <div class="info-item full-width">
+                                <label><i class="fas fa-quote-left"></i> Giới thiệu</label>
+                                <span id="profile-display-bio">Chưa có giới thiệu</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-section stats-section">
+                        <div class="section-header">
+                            <h4><i class="fas fa-chart-line"></i> Thống kê hoạt động</h4>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card-pro">
+                                <div class="stat-icon wallet"><i class="fas fa-wallet"></i></div>
+                                <div class="stat-content">
+                                    <span class="stat-value" id="profile-balance">0</span>
+                                    <span class="stat-label">VNĐ</span>
+                                    <span class="stat-desc">Số dư ví</span>
+                                </div>
+                            </div>
+                            <div class="stat-card-pro">
+                                <div class="stat-icon sales"><i class="fas fa-shopping-cart"></i></div>
+                                <div class="stat-content">
+                                    <span class="stat-value" id="profile-sales">0</span>
+                                    <span class="stat-label">tin</span>
+                                    <span class="stat-desc">Đã bán</span>
+                                </div>
+                            </div>
+                            <div class="stat-card-pro">
+                                <div class="stat-icon rating"><i class="fas fa-star"></i></div>
+                                <div class="stat-content">
+                                    <span class="stat-value" id="profile-rating">5.0</span>
+                                    <span class="stat-label">/5</span>
+                                    <span class="stat-desc">Đánh giá</span>
+                                </div>
+                            </div>
+                            <div class="stat-card-pro">
+                                <div class="stat-icon posts"><i class="fas fa-clipboard-list"></i></div>
+                                <div class="stat-content">
+                                    <span class="stat-value" id="profile-posts">0</span>
+                                    <span class="stat-label">tin</span>
+                                    <span class="stat-desc">Đang đăng</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Edit Mode -->
+                <div id="profile-edit-mode" style="display: none;">
+                    <form id="profile-edit-form" class="edit-form-pro">
+                        <div class="form-section-pro">
+                            <h4><i class="fas fa-edit"></i> Chỉnh sửa thông tin</h4>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="edit-name">Họ tên *</label>
+                                    <input type="text" id="edit-name" required placeholder="Nhập họ tên đầy đủ">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="edit-email">Email *</label>
+                                    <input type="email" id="edit-email" disabled class="disabled-input">
+                                    <small class="form-help">Email không thể thay đổi</small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="edit-phone">Số điện thoại</label>
+                                    <input type="tel" id="edit-phone" placeholder="VD: 0901234567">
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit-location">Địa chỉ</label>
+                                    <input type="text" id="edit-location" placeholder="VD: Quận 1, TP.HCM">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="edit-bio">Giới thiệu bản thân</label>
+                                <textarea id="edit-bio" rows="3" placeholder="Chia sẻ về bản thân, sở thích nuôi thú cưng..."></textarea>
+                                <small class="form-help">Giới thiệu hay sẽ tăng độ tin cậy với khách hàng</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions-pro">
+                            <button type="button" class="btn btn-outline-pro" onclick="cancelEdit()">
+                                <i class="fas fa-times"></i> Hủy bỏ
+                            </button>
+                            <button type="submit" class="btn btn-primary-pro">
+                                <i class="fas fa-save"></i> Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Pets Modal -->
+    <div class="modal" id="my-pets-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-heart"></i> Thú cưng của tôi</h3>
+                <span class="close" onclick="closeModal('my-pets-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="my-pets-list">
+                    <!-- My pets content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Chat Popup -->
+    <div class="support-chat-popup" id="support-chat-popup" style="display: none;">
+        <div class="chat-window">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <div class="agent-info">
+                    <div class="agent-avatar">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face" alt="Support">
+                        <span class="status-indicator"></span>
+                    </div>
+                    <div class="agent-details">
+                        <h4>Z&L PetMart Support</h4>
+                        <span class="agent-status">Đang trực tuyến</span>
+                    </div>
+                </div>
+                <div class="chat-controls">
+                    <button class="control-btn minimize-btn" onclick="minimizeChat()" title="Thu nhỏ">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button class="control-btn close-btn" onclick="closeSupportChat()" title="Đóng">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="support-chat-messages">
+                <div class="message-group">
+                    <div class="message bot-message">
+                        <div class="message-bubble">
+                            <p>👋 Xin chào! Chúng tôi có thể hỗ trợ gì cho bạn?</p>
+                        </div>
+                        <span class="message-time">Vừa xong</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Toggle -->
+            <div class="quick-actions-toggle" onclick="toggleQuickActions()">
+                <i class="fas fa-chevron-up" id="quick-actions-icon"></i>
+                <span>Gợi ý nhanh</span>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions" id="quick-actions">
+                <div class="quick-action-item" onclick="quickMessage('Tôi cần hỗ trợ về tài khoản')">
+                    <i class="fas fa-user"></i>
+                    <span>Tài khoản</span>
+                </div>
+                <div class="quick-action-item" onclick="quickMessage('Tôi có vấn đề về giao dịch')">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Giao dịch</span>
+                </div>
+                <div class="quick-action-item" onclick="quickMessage('Tôi cần hỗ trợ đăng tin')">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Đăng tin</span>
+                </div>
+                <div class="quick-action-item" onclick="quickMessage('Tôi gặp lỗi kỹ thuật')">
+                    <i class="fas fa-bug"></i>
+                    <span>Lỗi kỹ thuật</span>
+                </div>
+            </div>
+
+            <!-- Guest Form -->
+            <div class="guest-form" id="guest-form" style="display: none;">
+                <div class="guest-welcome">
+                    <i class="fas fa-comments"></i>
+                    <h4>Bắt đầu trò chuyện</h4>
+                    <p>Vui lòng nhập tên để tiếp tục</p>
+                </div>
+                <div class="guest-input-wrapper">
+                    <input type="text" id="guest-name" placeholder="Tên của bạn" maxlength="30">
+                    <button class="start-chat-btn" onclick="startGuestChat()">
+                        Bắt đầu
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-section" id="chat-input-section" style="display: none;">
+                <div class="input-wrapper">
+                    <button class="attach-btn" onclick="attachFile()" title="Đính kèm">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <input type="text" id="support-message-input" placeholder="Nhập tin nhắn..." 
+                           onkeypress="if(event.key==='Enter') sendSupportMessage()" maxlength="500">
+                    <button class="send-btn" onclick="sendSupportMessage()" title="Gửi">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Support Chat Button -->
+    <div class="support-chat-float" onclick="openSupportChat()">
+        <i class="fas fa-comments"></i>
+        <span class="support-text">Hỗ trợ</span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    
+    <!-- Mobile Bottom Navigation Footer -->
+    <div class="mobile-bottom-nav">
+        <div class="mobile-nav-item" onclick="scrollToSection('home')">
+            <i class="fas fa-home"></i>
+            <span>Trang chủ</span>
+        </div>
+        <div class="mobile-nav-item" onclick="scrollToSection('pets')">
+            <i class="fas fa-paw"></i>
+            <span>Mua bán</span>
+        </div>
+        <div class="mobile-nav-item" onclick="scrollToSection('services')">
+            <i class="fas fa-heart"></i>
+            <span>Dịch vụ</span>
+        </div>
+        <div class="mobile-nav-item" onclick="scrollToSection('community')">
+            <i class="fas fa-users"></i>
+            <span>Cộng đồng</span>
+        </div>
+        <div class="mobile-nav-item" onclick="scrollToSection('contact')">
+            <i class="fas fa-phone"></i>
+            <span>Liên hệ</span>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sell Pet Modal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div style="padding: 20px;">
+        <button class="btn btn-primary" onclick="document.getElementById('sell-pet-modal').style.display='block'">
+            <i class="fas fa-store"></i> Test Sell Pet Modal
+        </button>
+    </div>
+
+    <!-- Sell Pet Modal - Professional Design -->
+    <div class="modal" id="sell-pet-modal" style="display: none;">
+        <div class="modal-content large-modal sell-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-store"></i> Quản lý bán thú cưng</h3>
+                <span class="close" onclick="document.getElementById('sell-pet-modal').style.display='none'">&times;</span>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="sell-tabs">
+                <div class="tab-nav">
+                    <button class="tab-btn active" onclick="switchTab('new-post')">
+                        <i class="fas fa-plus"></i> Đăng tin mới
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('my-posts')">
+                        <i class="fas fa-list"></i> Tin đang đăng
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('history')">
+                        <i class="fas fa-history"></i> Lịch sử
+                    </button>
+                </div>
+                
+                <!-- New Post Tab -->
+                <div class="tab-content active" id="new-post-tab">
+                    <form id="pet-form" class="pet-form professional">
+                        <!-- Basic Information -->
+                        <div class="form-section">
+                            <h4><i class="fas fa-paw"></i> Thông tin cơ bản</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pet-name">Tên thú cưng *</label>
+                                    <input type="text" id="pet-name" name="name" placeholder="VD: Lucky, Miu..." required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pet-category">Danh mục *</label>
+                                    <select id="pet-category" name="category" required>
+                                        <option value="">Chọn danh mục</option>
+                                        <option value="dog">🐕 Chó</option>
+                                        <option value="cat">🐱 Mèo</option>
+                                        <option value="bird">🐦 Chim</option>
+                                        <option value="fish">🐠 Cá</option>
+                                        <option value="reptile">🦎 Bò sát</option>
+                                        <option value="small_animal">🐹 Động vật nhỏ</option>
+                                        <option value="other">🐾 Khác</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pet-type">Loại/Giống *</label>
+                                    <input type="text" id="pet-type" name="type" placeholder="VD: Golden Retriever" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pet-breed">Giống chi tiết</label>
+                                    <input type="text" id="pet-breed" name="breed" placeholder="VD: Golden Retriever thuần chủng">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Health Information -->
+                        <div class="form-section">
+                            <h4><i class="fas fa-heart"></i> Thông tin sức khỏe</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pet-vaccination-status">Tình trạng tiêm chủng</label>
+                                    <select id="pet-vaccination-status" name="vaccination_status">
+                                        <option value="unknown" selected>Không rõ</option>
+                                        <option value="up_to_date">Đã tiêm đầy đủ</option>
+                                        <option value="partial">Tiêm một phần</option>
+                                        <option value="none">Chưa tiêm</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pet-health-certificate">Giấy chứng nhận sức khỏe</label>
+                                    <select id="pet-health-certificate" name="health_certificate">
+                                        <option value="0" selected>Không có</option>
+                                        <option value="1">Có</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Images -->
+                        <div class="form-section">
+                            <h4><i class="fas fa-camera"></i> Hình ảnh</h4>
+                            <div class="form-group">
+                                <div class="upload-area" onclick="document.getElementById('pet-images').click()">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Nhấp để chọn ảnh hoặc kéo thả vào đây</p>
+                                    <small>Tối đa 5 ảnh, mỗi ảnh không quá 2MB</small>
+                                </div>
+                                <input type="file" id="pet-images" name="images" multiple accept="image/*" style="display: none;">
+                                <div class="image-preview" id="image-preview"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary">
+                                <i class="fas fa-undo"></i> Làm mới
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-large">
+                                <i class="fas fa-paper-plane"></i> Đăng tin ngay
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- My Posts Tab -->
+                <div class="tab-content" id="my-posts-tab">
+                    <div class="posts-header">
+                        <h4><i class="fas fa-list"></i> Tin đang đăng (3)</h4>
+                        <div class="posts-stats">
+                            <span class="stat-item"><i class="fas fa-eye"></i> 1,234 lượt xem</span>
+                            <span class="stat-item"><i class="fas fa-heart"></i> 89 lượt thích</span>
+                        </div>
+                    </div>
+                    <div class="posts-list" id="active-posts">
+                        <p>Đang tải tin đăng...</p>
+                    </div>
+                </div>
+                
+                <!-- History Tab -->
+                <div class="tab-content" id="history-tab">
+                    <div class="posts-header">
+                        <h4><i class="fas fa-history"></i> Lịch sử đăng tin</h4>
+                        <div class="filter-options">
+                            <select id="history-filter">
+                                <option value="all">Tất cả</option>
+                                <option value="sold">Đã bán</option>
+                                <option value="expired">Hết hạn</option>
+                                <option value="removed">Đã gỡ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="posts-list" id="history-posts">
+                        <p>Chưa có lịch sử tin đăng</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons  
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Add active class to selected tab button
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

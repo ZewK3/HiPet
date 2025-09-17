@@ -1,0 +1,35 @@
+name = "hipet-backend"
+compatibility_date = "2023-12-01"
+
+[env.production]
+name = "hipet-backend"
+
+[env.staging]
+name = "hipet-backend-staging"
+
+# Variables (for production, use secrets)
+[vars]
+JWT_SECRET = "your-secret-key-here"
+API_VERSION = "1.0.0"
+
+# D1 Database bindings
+[[d1_databases]]
+binding = "DB"
+database_name = "hipet-db"
+database_id = "your-database-id-here"
+
+# R2 Storage bindings
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "hipet-files"
+
+# KV Namespaces (for caching)
+[[kv_namespaces]]
+binding = "CACHE"
+id = "your-kv-namespace-id"
+preview_id = "your-preview-kv-namespace-id"
+
+# Durable Objects (for real-time chat)
+# [[durable_objects.bindings]]
+# name = "CHAT_ROOM"
+# class_name = "ChatRoom"

@@ -1,0 +1,24 @@
+{
+  "name": "hipet-frontend",
+  "version": "1.0.0",
+  "description": "Frontend cho nền tảng mua bán thú cưng HiPet",
+  "main": "index.html",
+  "scripts": {
+    "serve": "python -m http.server 8000",
+    "serve:node": "npx serve .",
+    "build": "echo 'No build process required for static files'",
+    "deploy": "gh-pages -d ."
+  },
+  "keywords": [
+    "pet-trading",
+    "frontend",
+    "github-pages",
+    "vanilla-js"
+  ],
+  "author": "HiPet Team",
+  "license": "MIT",
+  "devDependencies": {
+    "gh-pages": "^6.0.0",
+    "serve": "^14.0.0"
+  }
+}

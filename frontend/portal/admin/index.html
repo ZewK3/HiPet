@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiPet - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="admin-login-screen" class="admin-login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fas fa-paw"></i>
+                    <span>HiPet Admin</span>
+                </div>
+                <h2>Đăng nhập quản trị</h2>
+                <p>Vui lòng đăng nhập để truy cập hệ thống quản trị</p>
+            </div>
+            
+            <form id="admin-login-form" class="login-form">
+                <div class="form-group">
+                    <label for="admin-email">Email quản trị</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="admin-email" name="email" required placeholder="admin@hipet.com">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="admin-password">Mật khẩu</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="admin-password" name="password" required placeholder="••••••••">
+                        <button type="button" class="password-toggle" onclick="togglePassword('admin-password')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox">
+                        <input type="checkbox" id="admin-remember">
+                        <span class="checkmark"></span>
+                        Ghi nhớ đăng nhập
+                    </label>
+                    <a href="#" class="forgot-password">Quên mật khẩu?</a>
+                </div>
+                
+                <!-- Two-Factor Authentication -->
+                <div class="form-group" id="two-factor-group" style="display: none;">
+                    <label for="admin-2fa">Mã xác thực 2FA</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-shield-alt"></i>
+                        <input type="text" id="admin-2fa" name="twoFactorCode" placeholder="000000" maxlength="6">
+                    </div>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Đăng nhập Admin
+                </button>
+            </form>
+            
+            <div class="login-footer">
+                <p><a href="../../index.html">← Quay lại trang chủ</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (Hidden initially) -->
+    <div id="admin-dashboard" style="display: none;">
+    <!-- Navigation -->
+    <nav class="admin-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-paw"></i>
+                <span>HiPet Admin</span>
+            </div>
+            <div class="nav-user">
+                <span id="admin-name">Admin User</span>
+                <button onclick="logout()" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Đăng xuất
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-menu">
+            <div class="menu-item active" data-section="dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="menu-item" data-section="users">
+                <i class="fas fa-users"></i>
+                <span>Quản lý người dùng</span>
+            </div>
+            <div class="menu-item" data-section="pets">
+                <i class="fas fa-dog"></i>
+                <span>Quản lý thú cưng</span>
+            </div>
+            <div class="menu-item" data-section="transactions">
+                <i class="fas fa-credit-card"></i>
+                <span>Giao dịch</span>
+            </div>
+            <div class="menu-item" data-section="reports">
+                <i class="fas fa-chart-bar"></i>
+                <span>Báo cáo</span>
+            </div>
+            <div class="menu-item" data-section="settings">
+                <i class="fas fa-cog"></i>
+                <span>Cài đặt</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="content-section active">
+            <div class="section-header">
+                <h1>Dashboard</h1>
+                <p>Tổng quan về hệ thống</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon users">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-users">0</h3>
+                        <p>Tổng người dùng</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon pets">
+                        <i class="fas fa-paw"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-pets">0</h3>
+                        <p>Tổng thú cưng</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon transactions">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-transactions">0</h3>
+                        <p>Giao dịch hôm nay</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon revenue">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-revenue">0</h3>
+                        <p>Doanh thu (VND)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="dashboard-grid">
+                <!-- Enhanced Statistics Cards -->
+                <div class="card stats-card">
+                    <div class="card-header">
+                        <h3>Thống kê nâng cao</h3>
+                        <div class="card-actions">
+                            <select id="stats-period" class="period-selector">
+                                <option value="today">Hôm nay</option>
+                                <option value="week" selected>7 ngày qua</option>
+                                <option value="month">30 ngày qua</option>
+                                <option value="year">Năm nay</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mini-stats-grid">
+                            <div class="mini-stat-item">
+                                <div class="stat-icon trust-score">
+                                    <i class="fas fa-medal"></i>
+                                </div>
+                                <div class="stat-details">
+                                    <span class="stat-number" id="avg-trust-score">98.5</span>
+                                    <span class="stat-label">Điểm tin cậy TB</span>
+                                </div>
+                            </div>
+                            <div class="mini-stat-item">
+                                <div class="stat-icon verification">
+                                    <i class="fas fa-shield-check"></i>
+                                </div>
+                                <div class="stat-details">
+                                    <span class="stat-number" id="verified-users">87%</span>
+                                    <span class="stat-label">Người dùng xác minh</span>
+                                </div>
+                            </div>
+                            <div class="mini-stat-item">
+                                <div class="stat-icon business">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <div class="stat-details">
+                                    <span class="stat-number" id="business-accounts">156</span>
+                                    <span class="stat-label">Tài khoản doanh nghiệp</span>
+                                </div>
+                            </div>
+                            <div class="mini-stat-item">
+                                <div class="stat-icon subscription">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                                <div class="stat-details">
+                                    <span class="stat-number" id="premium-users">23%</span>
+                                    <span class="stat-label">Người dùng Premium</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pet Health Statistics -->
+                <div class="card health-stats">
+                    <div class="card-header">
+                        <h3>Thống kê sức khỏe thú cưng</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="health-chart-container">
+                            <canvas id="health-chart" width="300" height="200"></canvas>
+                        </div>
+                        <div class="health-breakdown">
+                            <div class="health-item">
+                                <span class="health-label">Đã tiêm đầy đủ</span>
+                                <span class="health-percentage" id="full-vaccinated">78%</span>
+                            </div>
+                            <div class="health-item">
+                                <span class="health-label">Có giấy chứng nhận</span>
+                                <span class="health-percentage" id="health-certified">65%</span>
+                            </div>
+                            <div class="health-item">
+                                <span class="health-label">Có chip định danh</span>
+                                <span class="health-percentage" id="microchipped">42%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Hoạt động gần đây</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-sm" onclick="refreshActivities()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="recent-activities" class="activities-list">
+                            <!-- Activities will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Thú cưng mới nhất</h3>
+                        <div class="card-actions">
+                            <span class="badge badge-info" id="new-pets-count">12 mới</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="recent-pets" class="pets-list">
+                            <!-- Recent pets will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction Overview -->
+                <div class="card transaction-overview">
+                    <div class="card-header">
+                        <h3>Tổng quan giao dịch</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="transaction-summary">
+                            <div class="transaction-item">
+                                <div class="transaction-icon completed">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <span class="transaction-amount" id="completed-transactions">1,234</span>
+                                    <span class="transaction-label">Hoàn thành</span>
+                                </div>
+                            </div>
+                            <div class="transaction-item">
+                                <div class="transaction-icon pending">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <span class="transaction-amount" id="pending-transactions">89</span>
+                                    <span class="transaction-label">Đang xử lý</span>
+                                </div>
+                            </div>
+                            <div class="transaction-item">
+                                <div class="transaction-icon disputed">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <span class="transaction-amount" id="disputed-transactions">5</span>
+                                    <span class="transaction-label">Tranh chấp</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Health -->
+                <div class="card system-health">
+                    <div class="card-header">
+                        <h3>Tình trạng hệ thống</h3>
+                        <div class="system-status online">
+                            <span class="status-indicator"></span>
+                            <span>Hoạt động bình thường</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="system-metrics">
+                            <div class="metric-item">
+                                <span class="metric-label">API Response Time</span>
+                                <span class="metric-value good" id="api-response-time">145ms</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Database Load</span>
+                                <span class="metric-value good" id="db-load">23%</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Storage Usage</span>
+                                <span class="metric-value warning" id="storage-usage">78%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Users Management Section -->
+        <section id="users" class="content-section">
+            <div class="section-header">
+                <h1>Quản lý người dùng</h1>
+                <button class="btn-primary" onclick="showAddUserModal()">
+                    <i class="fas fa-plus"></i>
+                    Thêm người dùng
+                </button>
+            </div>
+
+            <!-- Users Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <input type="search" id="user-search" placeholder="Tìm kiếm người dùng...">
+                    <select id="user-role-filter">
+                        <option value="">Tất cả vai trò</option>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="support">Support</option>
+                    </select>
+                    <select id="user-status-filter">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="active">Hoạt động</option>
+                        <option value="blocked">Bị khóa</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ảnh</th>
+                            <th>Tên</th>
+                            <th>Email</th>
+                            <th>Vai trò</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <!-- Users data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="users-pagination">
+                <!-- Pagination will be generated here -->
+            </div>
+        </section>
+
+        <!-- Pets Management Section -->
+        <section id="pets" class="content-section">
+            <div class="section-header">
+                <h1>Quản lý thú cưng</h1>
+                <div class="header-actions">
+                    <button class="btn-secondary" onclick="exportPetsData()">
+                        <i class="fas fa-download"></i>
+                        Xuất dữ liệu
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pets Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <input type="search" id="pet-search" placeholder="Tìm kiếm thú cưng...">
+                    <select id="pet-type-filter">
+                        <option value="">Tất cả loại</option>
+                        <option value="dog">Chó</option>
+                        <option value="cat">Mèo</option>
+                        <option value="bird">Chim</option>
+                        <option value="fish">Cá</option>
+                        <option value="rabbit">Thỏ</option>
+                        <option value="hamster">Chuột hamster</option>
+                        <option value="other">Khác</option>
+                    </select>
+                    <select id="pet-status-filter">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="active">Đang bán</option>
+                        <option value="sold">Đã bán</option>
+                        <option value="pending">Chờ duyệt</option>
+                        <option value="rejected">Bị từ chối</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Pets Grid -->
+            <div id="pets-grid" class="pets-admin-grid">
+                <!-- Pets will be loaded here -->
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pets-pagination">
+                <!-- Pagination will be generated here -->
+            </div>
+        </section>
+
+        <!-- Transactions Section -->
+        <section id="transactions" class="content-section">
+            <div class="section-header">
+                <h1>Quản lý giao dịch</h1>
+                <div class="header-actions">
+                    <button class="btn-secondary" onclick="exportTransactionsData()">
+                        <i class="fas fa-download"></i>
+                        Xuất báo cáo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Transaction Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <input type="search" id="transaction-search" placeholder="Tìm kiếm giao dịch...">
+                    <select id="transaction-type-filter">
+                        <option value="">Tất cả loại</option>
+                        <option value="deposit">Nạp tiền</option>
+                        <option value="withdraw">Rút tiền</option>
+                        <option value="purchase">Mua hàng</option>
+                        <option value="refund">Hoàn tiền</option>
+                    </select>
+                    <select id="transaction-status-filter">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="pending">Chờ xử lý</option>
+                        <option value="completed">Hoàn thành</option>
+                        <option value="failed">Thất bại</option>
+                        <option value="cancelled">Đã hủy</option>
+                    </select>
+                    <input type="date" id="transaction-date-from">
+                    <input type="date" id="transaction-date-to">
+                </div>
+            </div>
+
+            <!-- Transactions Table -->
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Người dùng</th>
+                            <th>Loại</th>
+                            <th>Số tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Phương thức</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactions-table-body">
+                        <!-- Transactions data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="transactions-pagination">
+                <!-- Pagination will be generated here -->
+            </div>
+        </section>
+
+        <!-- Reports Section -->
+        <section id="reports" class="content-section">
+            <div class="section-header">
+                <h1>Báo cáo thống kê</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="generateReport()">
+                        <i class="fas fa-chart-line"></i>
+                        Tạo báo cáo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Report Cards -->
+            <div class="reports-grid">
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3>Thống kê người dùng</h3>
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="report-content">
+                        <canvas id="users-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3>Thống kê doanh thu</h3>
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="report-content">
+                        <canvas id="revenue-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3>Thống kê thú cưng</h3>
+                        <i class="fas fa-paw"></i>
+                    </div>
+                    <div class="report-content">
+                        <canvas id="pets-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3>Hoạt động hệ thống</h3>
+                        <i class="fas fa-activity"></i>
+                    </div>
+                    <div class="report-content">
+                        <canvas id="activity-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings" class="content-section">
+            <div class="section-header">
+                <h1>Cài đặt hệ thống</h1>
+            </div>
+
+            <div class="settings-grid">
+                <div class="settings-card">
+                    <h3>Cài đặt chung</h3>
+                    <div class="setting-item">
+                        <label>Tên trang web</label>
+                        <input type="text" id="site-name" value="HiPet">
+                    </div>
+                    <div class="setting-item">
+                        <label>Email liên hệ</label>
+                        <input type="email" id="contact-email" value="contact@hipet.com">
+                    </div>
+                    <div class="setting-item">
+                        <label>Số điện thoại</label>
+                        <input type="tel" id="contact-phone" value="1900-xxxx">
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Cài đặt bảo mật</h3>
+                    <div class="setting-item">
+                        <label>Thời gian hết hạn session (phút)</label>
+                        <input type="number" id="session-timeout" value="60">
+                    </div>
+                    <div class="setting-item">
+                        <label>Số lần đăng nhập sai tối đa</label>
+                        <input type="number" id="max-login-attempts" value="5">
+                    </div>
+                    <div class="setting-item">
+                        <label>Yêu cầu xác thực 2FA</label>
+                        <label class="switch">
+                            <input type="checkbox" id="require-2fa">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Cài đặt thanh toán</h3>
+                    <div class="setting-item">
+                        <label>Phí giao dịch (%)</label>
+                        <input type="number" id="transaction-fee" value="2" step="0.1">
+                    </div>
+                    <div class="setting-item">
+                        <label>Số tiền nạp tối thiểu (VND)</label>
+                        <input type="number" id="min-deposit" value="50000">
+                    </div>
+                    <div class="setting-item">
+                        <label>Số tiền rút tối thiểu (VND)</label>
+                        <input type="number" id="min-withdraw" value="100000">
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Cài đặt thông báo</h3>
+                    <div class="setting-item">
+                        <label>Email thông báo admin</label>
+                        <input type="email" id="admin-email" value="admin@hipet.com">
+                    </div>
+                    <div class="setting-item">
+                        <label>Gửi thông báo qua SMS</label>
+                        <label class="switch">
+                            <input type="checkbox" id="sms-notifications">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>Thông báo email tự động</label>
+                        <label class="switch">
+                            <input type="checkbox" id="auto-email" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-actions">
+                <button class="btn-primary" onclick="saveSettings()">
+                    <i class="fas fa-save"></i>
+                    Lưu cài đặt
+                </button>
+                <button class="btn-secondary" onclick="resetSettings()">
+                    <i class="fas fa-undo"></i>
+                    Khôi phục mặc định
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <!-- Add User Modal -->
+    <div id="add-user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Thêm người dùng mới</h3>
+                <span class="close" onclick="closeModal('add-user-modal')">&times;</span>
+            </div>
+            <form id="add-user-form" class="modal-body">
+                <div class="form-group">
+                    <label>Tên đầy đủ</label>
+                    <input type="text" name="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input type="tel" name="phone">
+                </div>
+                <div class="form-group">
+                    <label>Vai trò</label>
+                    <select name="role" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="support">Support</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu</label>
+                    <input type="password" name="password" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('add-user-modal')">Hủy</button>
+                    <button type="submit" class="btn-primary">Thêm người dùng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="edit-user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chỉnh sửa người dùng</h3>
+                <span class="close" onclick="closeModal('edit-user-modal')">&times;</span>
+            </div>
+            <form id="edit-user-form" class="modal-body">
+                <input type="hidden" name="userId">
+                <div class="form-group">
+                    <label>Tên đầy đủ</label>
+                    <input type="text" name="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input type="tel" name="phone">
+                </div>
+                <div class="form-group">
+                    <label>Vai trò</label>
+                    <select name="role" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="support">Support</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <select name="status" required>
+                        <option value="active">Hoạt động</option>
+                        <option value="blocked">Bị khóa</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('edit-user-modal')">Hủy</button>
+                    <button type="submit" class="btn-primary">Cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pet Detail Modal -->
+    <div id="pet-detail-modal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Chi tiết thú cưng</h3>
+                <span class="close" onclick="closeModal('pet-detail-modal')">&times;</span>
+            </div>
+            <div class="modal-body" id="pet-detail-content">
+                <!-- Pet details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Detail Modal -->
+    <div id="transaction-detail-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chi tiết giao dịch</h3>
+                <span class="close" onclick="closeModal('transaction-detail-modal')">&times;</span>
+            </div>
+            <div class="modal-body" id="transaction-detail-content">
+                <!-- Transaction details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Đang tải...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="../assets/js/admin-login.js"></script>
+    <script src="../assets/js/admin.js"></script>
+</body>
+</html>
