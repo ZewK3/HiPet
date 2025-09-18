@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiPet Marketing Dashboard - Quản lý quảng cáo</title>
+    <link rel="stylesheet" href="../assets/css/marketing.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="marketing-login-screen" class="marketing-login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>HiPet Marketing</span>
+                </div>
+                <h2>Đăng nhập Marketing</h2>
+                <p>Vui lòng đăng nhập để truy cập hệ thống quản lý marketing</p>
+            </div>
+            
+            <form id="marketing-login-form" class="login-form">
+                <div class="form-group">
+                    <label for="marketing-email">Email marketing</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="marketing-email" name="email" required placeholder="marketing@hipet.com">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="marketing-password">Mật khẩu</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="marketing-password" name="password" required placeholder="••••••••">
+                        <button type="button" class="password-toggle" onclick="togglePassword('marketing-password')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox">
+                        <input type="checkbox" id="marketing-remember">
+                        <span class="checkmark"></span>
+                        Ghi nhớ đăng nhập
+                    </label>
+                    <a href="#" class="forgot-password">Quên mật khẩu?</a>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-bullhorn"></i>
+                    Đăng nhập Marketing
+                </button>
+                
+                <div class="campaign-status">
+                    <div class="status active">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Sẵn sàng quản lý chiến dịch</span>
+                    </div>
+                </div>
+            </form>
+            
+            <div class="login-footer">
+                <p><a href="../../index.html">← Quay lại trang chủ</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Marketing Dashboard (Hidden initially) -->
+    <div id="marketing-dashboard" style="display: none;">
+    <!-- Navigation -->
+    <nav class="marketing-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-bullhorn"></i>
+                <span>HiPet Marketing</span>
+            </div>
+            <div class="nav-user">
+                <div class="user-info">
+                    <span class="user-name">Marketing Manager</span>
+                    <span class="user-role">Quản lý Marketing</span>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Đăng xuất
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-menu">
+            <div class="menu-item active" data-section="dashboard">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="menu-item" data-section="campaigns">
+                <i class="fas fa-bullhorn"></i>
+                <span>Chiến dịch quảng cáo</span>
+                <span class="badge" id="active-campaigns-count">0</span>
+            </div>
+            <div class="menu-item" data-section="ad-spaces">
+                <i class="fas fa-th-large"></i>
+                <span>Vị trí quảng cáo</span>
+            </div>
+            <div class="menu-item" data-section="advertisers">
+                <i class="fas fa-users"></i>
+                <span>Nhà quảng cáo</span>
+            </div>
+            <div class="menu-item" data-section="analytics">
+                <i class="fas fa-chart-pie"></i>
+                <span>Phân tích</span>
+            </div>
+            <div class="menu-item" data-section="billing">
+                <i class="fas fa-credit-card"></i>
+                <span>Thanh toán</span>
+            </div>
+            <div class="menu-item" data-section="settings">
+                <i class="fas fa-cog"></i>
+                <span>Cài đặt</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section class="content-section active" id="dashboard">
+            <div class="section-header">
+                <h1><i class="fas fa-chart-line"></i> Dashboard Marketing</h1>
+                <div class="header-actions">
+                    <select id="date-range">
+                        <option value="today">Hôm nay</option>
+                        <option value="week" selected>7 ngày qua</option>
+                        <option value="month">30 ngày qua</option>
+                        <option value="quarter">3 tháng qua</option>
+                    </select>
+                    <button class="btn-primary" onclick="refreshDashboard()">
+                        <i class="fas fa-sync-alt"></i> Làm mới
+                    </button>
+                </div>
+            </div>
+
+            <!-- Revenue Stats -->
+            <div class="stats-grid">
+                <div class="stat-card revenue">
+                    <div class="stat-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-revenue">0 VNĐ</h3>
+                        <p>Tổng doanh thu</p>
+                        <span class="stat-change positive" id="revenue-change">+0%</span>
+                    </div>
+                </div>
+                <div class="stat-card campaigns">
+                    <div class="stat-icon">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="active-campaigns">0</h3>
+                        <p>Chiến dịch đang chạy</p>
+                        <span class="stat-change" id="campaigns-change">0</span>
+                    </div>
+                </div>
+                <div class="stat-card impressions">
+                    <div class="stat-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-impressions">0</h3>
+                        <p>Lượt hiển thị</p>
+                        <span class="stat-change positive" id="impressions-change">+0%</span>
+                    </div>
+                </div>
+                <div class="stat-card clicks">
+                    <div class="stat-icon">
+                        <i class="fas fa-mouse-pointer"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-clicks">0</h3>
+                        <p>Lượt nhấp</p>
+                        <span class="stat-change positive" id="clicks-change">+0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Doanh thu theo ngày</h3>
+                        <div class="chart-actions">
+                            <button class="chart-btn active" data-chart="revenue">Doanh thu</button>
+                            <button class="chart-btn" data-chart="impressions">Hiển thị</button>
+                            <button class="chart-btn" data-chart="clicks">Nhấp chuột</button>
+                        </div>
+                    </div>
+                    <canvas id="revenue-chart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Top chiến dịch hiệu quả</h3>
+                    </div>
+                    <div class="top-campaigns" id="top-campaigns">
+                        <!-- Top campaigns will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-section">
+                <h3>Hoạt động gần đây</h3>
+                <div class="activity-list" id="recent-activity">
+                    <!-- Recent activities will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Campaigns Section -->
+        <section class="content-section" id="campaigns">
+            <div class="section-header">
+                <h1><i class="fas fa-bullhorn"></i> Quản lý chiến dịch</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="openNewCampaignModal()">
+                        <i class="fas fa-plus"></i> Tạo chiến dịch
+                    </button>
+                </div>
+            </div>
+
+            <!-- Campaigns Filter -->
+            <div class="filters">
+                <div class="filter-group">
+                    <input type="text" id="campaign-search" placeholder="Tìm kiếm chiến dịch...">
+                    <select id="campaign-status-filter">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="active">Đang chạy</option>
+                        <option value="paused">Tạm dừng</option>
+                        <option value="completed">Hoàn thành</option>
+                        <option value="draft">Bản nháp</option>
+                    </select>
+                    <select id="campaign-type-filter">
+                        <option value="">Tất cả loại</option>
+                        <option value="banner">Banner</option>
+                        <option value="sidebar">Sidebar</option>
+                        <option value="floating">Floating</option>
+                        <option value="sponsored">Sponsored Post</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Campaigns Table -->
+            <div class="table-container">
+                <table class="data-table" id="campaigns-table">
+                    <thead>
+                        <tr>
+                            <th>Tên chiến dịch</th>
+                            <th>Nhà quảng cáo</th>
+                            <th>Loại</th>
+                            <th>Ngân sách</th>
+                            <th>Hiển thị</th>
+                            <th>Nhấp chuột</th>
+                            <th>CTR</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="campaigns-list">
+                        <!-- Campaigns will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="campaigns-pagination">
+                <!-- Pagination will be generated here -->
+            </div>
+        </section>
+
+        <!-- Ad Spaces Section -->
+        <section class="content-section" id="ad-spaces">
+            <div class="section-header">
+                <h1><i class="fas fa-th-large"></i> Vị trí quảng cáo</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="openNewAdSpaceModal()">
+                        <i class="fas fa-plus"></i> Thêm vị trí
+                    </button>
+                </div>
+            </div>
+
+            <!-- Ad Spaces Grid -->
+            <div class="ad-spaces-grid" id="ad-spaces-grid">
+                <div class="ad-space-card" data-position="top-banner">
+                    <div class="ad-space-preview">
+                        <div class="preview-banner">
+                            <i class="fas fa-ad"></i>
+                            <span>Top Banner (1200x200)</span>
+                        </div>
+                    </div>
+                    <div class="ad-space-info">
+                        <h3>Banner đầu trang</h3>
+                        <p>Vị trí: Sau Hero Section</p>
+                        <div class="ad-space-stats">
+                            <span><i class="fas fa-eye"></i> 50,000 views/ngày</span>
+                            <span><i class="fas fa-dollar-sign"></i> 100,000 VNĐ/ngày</span>
+                        </div>
+                        <div class="ad-space-actions">
+                            <button class="btn-secondary" onclick="editAdSpace('top-banner')">
+                                <i class="fas fa-edit"></i> Chỉnh sửa
+                            </button>
+                            <button class="btn-primary" onclick="viewAdSpaceStats('top-banner')">
+                                <i class="fas fa-chart-bar"></i> Thống kê
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ad-space-card" data-position="sidebar">
+                    <div class="ad-space-preview">
+                        <div class="preview-sidebar">
+                            <i class="fas fa-ad"></i>
+                            <span>Sidebar (300x250)</span>
+                        </div>
+                    </div>
+                    <div class="ad-space-info">
+                        <h3>Sidebar</h3>
+                        <p>Vị trí: Bên cạnh danh sách thú cưng</p>
+                        <div class="ad-space-stats">
+                            <span><i class="fas fa-eye"></i> 30,000 views/ngày</span>
+                            <span><i class="fas fa-dollar-sign"></i> 70,000 VNĐ/ngày</span>
+                        </div>
+                        <div class="ad-space-actions">
+                            <button class="btn-secondary" onclick="editAdSpace('sidebar')">
+                                <i class="fas fa-edit"></i> Chỉnh sửa
+                            </button>
+                            <button class="btn-primary" onclick="viewAdSpaceStats('sidebar')">
+                                <i class="fas fa-chart-bar"></i> Thống kê
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ad-space-card" data-position="floating">
+                    <div class="ad-space-preview">
+                        <div class="preview-floating">
+                            <i class="fas fa-ad"></i>
+                            <span>Floating (400x300)</span>
+                        </div>
+                    </div>
+                    <div class="ad-space-info">
+                        <h3>Quảng cáo nổi</h3>
+                        <p>Vị trí: Popup trên trang</p>
+                        <div class="ad-space-stats">
+                            <span><i class="fas fa-eye"></i> 20,000 views/ngày</span>
+                            <span><i class="fas fa-dollar-sign"></i> 120,000 VNĐ/ngày</span>
+                        </div>
+                        <div class="ad-space-actions">
+                            <button class="btn-secondary" onclick="editAdSpace('floating')">
+                                <i class="fas fa-edit"></i> Chỉnh sửa
+                            </button>
+                            <button class="btn-primary" onclick="viewAdSpaceStats('floating')">
+                                <i class="fas fa-chart-bar"></i> Thống kê
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ad-space-card" data-position="bottom-banner">
+                    <div class="ad-space-preview">
+                        <div class="preview-banner">
+                            <i class="fas fa-ad"></i>
+                            <span>Bottom Banner (1200x200)</span>
+                        </div>
+                    </div>
+                    <div class="ad-space-info">
+                        <h3>Banner cuối trang</h3>
+                        <p>Vị trí: Trước Footer</p>
+                        <div class="ad-space-stats">
+                            <span><i class="fas fa-eye"></i> 25,000 views/ngày</span>
+                            <span><i class="fas fa-dollar-sign"></i> 60,000 VNĐ/ngày</span>
+                        </div>
+                        <div class="ad-space-actions">
+                            <button class="btn-secondary" onclick="editAdSpace('bottom-banner')">
+                                <i class="fas fa-edit"></i> Chỉnh sửa
+                            </button>
+                            <button class="btn-primary" onclick="viewAdSpaceStats('bottom-banner')">
+                                <i class="fas fa-chart-bar"></i> Thống kê
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Advanced Ad Management Section -->
+        <section class="content-section" id="ad-management">
+            <div class="section-header">
+                <h2><i class="fas fa-cogs"></i> Quản lý Quảng cáo Nâng cao</h2>
+                <button class="btn-primary" onclick="createNewAd()">
+                    <i class="fas fa-plus"></i> Tạo quảng cáo mới
+                </button>
+            </div>
+
+            <!-- Ad Templates Management -->
+            <div class="ad-templates-section">
+                <h3><i class="fas fa-templates"></i> Mẫu Quảng cáo</h3>
+                <div class="templates-grid">
+                    <!-- Carousel Ad Template -->
+                    <div class="template-card featured">
+                        <div class="template-header">
+                            <h4>Carousel Featured</h4>
+                            <span class="template-status active">Đang hoạt động</span>
+                        </div>
+                        <div class="template-preview">
+                            <div class="carousel-preview">
+                                <div class="mini-carousel">
+                                    <div class="mini-card">
+                                        <div class="mini-image"></div>
+                                        <div class="mini-info">
+                                            <div class="mini-title"></div>
+                                            <div class="mini-price"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="template-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">CTR</span>
+                                <span class="stat-value">4.2%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Impressions</span>
+                                <span class="stat-value">15.2K</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Clicks</span>
+                                <span class="stat-value">638</span>
+                            </div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="btn-secondary" onclick="editTemplate('carousel')">
+                                <i class="fas fa-edit"></i> Chỉnh sửa
+                            </button>
+                            <button class="btn-primary" onclick="manageCarouselAds()">
+                                <i class="fas fa-sliders-h"></i> Quản lý
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sponsored Cards Template -->
+                    <div class="template-card">
+                        <div class="template-header">
+                            <h4>Sponsored Cards</h4>
+                            <span class="template-status active">Đang hoạt động</span>
+                        </div>
+                        <div class="template-preview">
+                            <div class="sponsored-preview">
+                                <div class="mini-sponsored">
+                                    <div class="sponsored-badge">Sponsored</div>
+                                    <div class="sponsored-icon">🎯</div>
+                                    <div class="sponsored-title"></div>
+                                    <div class="sponsored-desc"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="template-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">CTR</span>
+                                <span class="stat-value">2.8%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Grid Ads</span>
+                                <span class="stat-value">24</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Active</span>
+                                <span class="stat-value">18</span>
+                            </div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="btn-secondary" onclick="editTemplate('sponsored')">
+                                <i class="fas fa-edit"></i> Chỉnh sửa
+                            </button>
+                            <button class="btn-primary" onclick="manageSponsoredAds()">
+                                <i class="fas fa-th"></i> Quản lý
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Banner Ads Template -->
+                    <div class="template-card">
+                        <div class="template-header">
+                            <h4>Premium Banners</h4>
+                            <span class="template-status active">Đang hoạt động</span>
+                        </div>
+                        <div class="template-preview">
+                            <div class="banner-preview">
+                                <div class="mini-banner">
+                                    <div class="banner-content">
+                                        <div class="banner-icon">💎</div>
+                                        <div class="banner-text">
+                                            <div class="banner-title"></div>
+                                            <div class="banner-subtitle"></div>
+                                        </div>
+                                        <div class="banner-cta"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="template-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">CTR</span>
+                                <span class="stat-value">3.5%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Views</span>
+                                <span class="stat-value">45.8K</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Revenue</span>
+                                <span class="stat-value">2.1M</span>
+                            </div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="btn-secondary" onclick="editTemplate('banner')">
+                                <i class="fas fa-edit"></i> Chỉnh sửa
+                            </button>
+                            <button class="btn-primary" onclick="manageBannerAds()">
+                                <i class="fas fa-image"></i> Quản lý
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ad Performance Dashboard -->
+            <div class="ad-performance-section">
+                <h3><i class="fas fa-chart-line"></i> Hiệu suất Quảng cáo</h3>
+                <div class="performance-grid">
+                    <!-- Real-time Metrics -->
+                    <div class="performance-card realtime">
+                        <div class="card-header">
+                            <h4>Thời gian thực</h4>
+                            <div class="live-indicator">
+                                <span class="live-dot"></span>
+                                <span>LIVE</span>
+                            </div>
+                        </div>
+                        <div class="realtime-metrics">
+                            <div class="metric">
+                                <span class="metric-label">Đang xem</span>
+                                <span class="metric-value" id="current-viewers">1,247</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Clicks/phút</span>
+                                <span class="metric-value" id="clicks-per-minute">12</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">CTR hiện tại</span>
+                                <span class="metric-value" id="current-ctr">3.2%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Performing Ads -->
+                    <div class="performance-card top-ads">
+                        <div class="card-header">
+                            <h4>Quảng cáo hàng đầu</h4>
+                            <select class="period-selector">
+                                <option value="today">Hôm nay</option>
+                                <option value="week">Tuần này</option>
+                                <option value="month">Tháng này</option>
+                            </select>
+                        </div>
+                        <div class="top-ads-list">
+                            <div class="ad-item">
+                                <div class="ad-preview-mini">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="ad-info">
+                                    <h5>Chăm sóc thú cưng</h5>
+                                    <span class="ad-type">Sponsored Card</span>
+                                </div>
+                                <div class="ad-metrics">
+                                    <span class="ctr">4.8% CTR</span>
+                                    <span class="clicks">1.2K clicks</span>
+                                </div>
+                            </div>
+                            <div class="ad-item">
+                                <div class="ad-preview-mini">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="ad-info">
+                                    <h5>Thức ăn premium</h5>
+                                    <span class="ad-type">Banner Ad</span>
+                                </div>
+                                <div class="ad-metrics">
+                                    <span class="ctr">3.9% CTR</span>
+                                    <span class="clicks">856 clicks</span>
+                                </div>
+                            </div>
+                            <div class="ad-item">
+                                <div class="ad-preview-mini">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                                <div class="ad-info">
+                                    <h5>Carousel Featured</h5>
+                                    <span class="ad-type">Carousel</span>
+                                </div>
+                                <div class="ad-metrics">
+                                    <span class="ctr">4.2% CTR</span>
+                                    <span class="clicks">638 clicks</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Revenue by Ad Type -->
+                    <div class="performance-card revenue-breakdown">
+                        <div class="card-header">
+                            <h4>Doanh thu theo loại QC</h4>
+                        </div>
+                        <div class="revenue-chart">
+                            <canvas id="revenueByAdTypeChart"></canvas>
+                        </div>
+                        <div class="revenue-legend">
+                            <div class="legend-item">
+                                <span class="legend-color carousel"></span>
+                                <span>Carousel: 45.2%</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color sponsored"></span>
+                                <span>Sponsored: 32.8%</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color banner"></span>
+                                <span>Banner: 22.0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ad Scheduling & Automation -->
+            <div class="ad-automation-section">
+                <h3><i class="fas fa-robot"></i> Tự động hóa & Lập lịch</h3>
+                <div class="automation-grid">
+                    <div class="automation-card">
+                        <div class="automation-header">
+                            <h4>A/B Testing</h4>
+                            <div class="automation-status running">
+                                <i class="fas fa-play"></i>
+                                <span>Đang chạy</span>
+                            </div>
+                        </div>
+                        <div class="automation-content">
+                            <p>Tự động kiểm tra hiệu suất các biến thể quảng cáo</p>
+                            <div class="automation-stats">
+                                <div class="stat">
+                                    <span>Tests đang chạy</span>
+                                    <strong>3</strong>
+                                </div>
+                                <div class="stat">
+                                    <span>Winner found</span>
+                                    <strong>1</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="automation-actions">
+                            <button class="btn-secondary" onclick="viewABTests()">
+                                <i class="fas fa-eye"></i> Xem chi tiết
+                            </button>
+                            <button class="btn-primary" onclick="createABTest()">
+                                <i class="fas fa-plus"></i> Tạo test mới
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="automation-card">
+                        <div class="automation-header">
+                            <h4>Smart Rotation</h4>
+                            <div class="automation-status active">
+                                <i class="fas fa-sync"></i>
+                                <span>Hoạt động</span>
+                            </div>
+                        </div>
+                        <div class="automation-content">
+                            <p>Tự động xoay quảng cáo dựa trên hiệu suất</p>
+                            <div class="automation-stats">
+                                <div class="stat">
+                                    <span>Rotations/ngày</span>
+                                    <strong>24</strong>
+                                </div>
+                                <div class="stat">
+                                    <span>CTR tăng</span>
+                                    <strong>+12%</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="automation-actions">
+                            <button class="btn-secondary" onclick="configureRotation()">
+                                <i class="fas fa-cog"></i> Cấu hình
+                            </button>
+                            <button class="btn-primary" onclick="viewRotationLogs()">
+                                <i class="fas fa-history"></i> Lịch sử
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="automation-card">
+                        <div class="automation-header">
+                            <h4>Budget Optimization</h4>
+                            <div class="automation-status active">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Tối ưu</span>
+                            </div>
+                        </div>
+                        <div class="automation-content">
+                            <p>Tự động phân bổ ngân sách dựa trên ROI</p>
+                            <div class="automation-stats">
+                                <div class="stat">
+                                    <span>ROI cải thiện</span>
+                                    <strong>+28%</strong>
+                                </div>
+                                <div class="stat">
+                                    <span>Tiết kiệm</span>
+                                    <strong>350K</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="automation-actions">
+                            <button class="btn-secondary" onclick="viewBudgetOptimization()">
+                                <i class="fas fa-chart-pie"></i> Phân tích
+                            </button>
+                            <button class="btn-primary" onclick="configureBudget()">
+                                <i class="fas fa-dollar-sign"></i> Cấu hình
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Advertisers Section -->
+        <section class="content-section" id="advertisers">
+            <div class="section-header">
+                <h1><i class="fas fa-users"></i> Quản lý nhà quảng cáo</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="openNewAdvertiserModal()">
+                        <i class="fas fa-user-plus"></i> Thêm nhà quảng cáo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Advertisers Table -->
+            <div class="table-container">
+                <table class="data-table" id="advertisers-table">
+                    <thead>
+                        <tr>
+                            <th>Tên công ty</th>
+                            <th>Liên hệ</th>
+                            <th>Email</th>
+                            <th>Chiến dịch</th>
+                            <th>Tổng chi tiêu</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="advertisers-list">
+                        <!-- Advertisers will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section class="content-section" id="analytics">
+            <div class="section-header">
+                <h1><i class="fas fa-chart-pie"></i> Phân tích chi tiết</h1>
+                <div class="header-actions">
+                    <select id="analytics-period">
+                        <option value="week">7 ngày qua</option>
+                        <option value="month" selected>30 ngày qua</option>
+                        <option value="quarter">3 tháng qua</option>
+                        <option value="year">12 tháng qua</option>
+                    </select>
+                    <button class="btn-primary" onclick="exportAnalytics()">
+                        <i class="fas fa-download"></i> Xuất báo cáo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Analytics Charts -->
+            <div class="analytics-grid">
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h3>Hiệu suất theo thời gian</h3>
+                    </div>
+                    <canvas id="performance-chart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Phân bổ theo loại quảng cáo</h3>
+                    </div>
+                    <canvas id="ad-type-chart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Top nhà quảng cáo</h3>
+                    </div>
+                    <div class="top-advertisers" id="top-advertisers-list">
+                        <!-- Top advertisers will be loaded here -->
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Hiệu suất vị trí quảng cáo</h3>
+                    </div>
+                    <canvas id="position-performance-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Billing Section -->
+        <section class="content-section" id="billing">
+            <div class="section-header">
+                <h1><i class="fas fa-credit-card"></i> Quản lý thanh toán</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="generateInvoice()">
+                        <i class="fas fa-file-invoice"></i> Tạo hóa đơn
+                    </button>
+                </div>
+            </div>
+
+            <!-- Billing Stats -->
+            <div class="billing-stats">
+                <div class="billing-card">
+                    <h3>Doanh thu tháng này</h3>
+                    <div class="billing-amount" id="monthly-revenue">0 VNĐ</div>
+                    <span class="billing-change positive">+15.2%</span>
+                </div>
+                <div class="billing-card">
+                    <h3>Chưa thanh toán</h3>
+                    <div class="billing-amount pending" id="pending-payments">0 VNĐ</div>
+                    <span class="billing-change">5 hóa đơn</span>
+                </div>
+                <div class="billing-card">
+                    <h3>Đã thanh toán</h3>
+                    <div class="billing-amount success" id="paid-amount">0 VNĐ</div>
+                    <span class="billing-change">20 hóa đơn</span>
+                </div>
+            </div>
+
+            <!-- Recent Invoices -->
+            <div class="table-container">
+                <h3>Hóa đơn gần đây</h3>
+                <table class="data-table" id="invoices-table">
+                    <thead>
+                        <tr>
+                            <th>Số hóa đơn</th>
+                            <th>Nhà quảng cáo</th>
+                            <th>Số tiền</th>
+                            <th>Ngày tạo</th>
+                            <th>Hạn thanh toán</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoices-list">
+                        <!-- Invoices will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section class="content-section" id="settings">
+            <div class="section-header">
+                <h1><i class="fas fa-cog"></i> Cài đặt Marketing</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="saveSettings()">
+                        <i class="fas fa-save"></i> Lưu cài đặt
+                    </button>
+                </div>
+            </div>
+
+            <!-- Settings Grid -->
+            <div class="settings-grid">
+                <div class="settings-card">
+                    <h3>Cài đặt giá</h3>
+                    <form id="pricing-settings">
+                        <div class="form-group">
+                            <label>Giá banner đầu trang (VNĐ/ngày)</label>
+                            <input type="number" name="top-banner-price" value="100000">
+                        </div>
+                        <div class="form-group">
+                            <label>Giá sidebar (VNĐ/ngày)</label>
+                            <input type="number" name="sidebar-price" value="70000">
+                        </div>
+                        <div class="form-group">
+                            <label>Giá floating ad (VNĐ/ngày)</label>
+                            <input type="number" name="floating-price" value="120000">
+                        </div>
+                        <div class="form-group">
+                            <label>Giá bottom banner (VNĐ/ngày)</label>
+                            <input type="number" name="bottom-banner-price" value="60000">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Cài đặt hiển thị</h3>
+                    <form id="display-settings">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="auto-approve" checked>
+                                Tự động duyệt quảng cáo
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="show-floating" checked>
+                                Hiển thị floating ads
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Thời gian hiển thị floating ad (giây)</label>
+                            <input type="number" name="floating-duration" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label>Số lượng ad tối đa trên trang</label>
+                            <input type="number" name="max-ads-per-page" value="3">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Cài đặt thanh toán</h3>
+                    <form id="payment-settings">
+                        <div class="form-group">
+                            <label>Phương thức thanh toán mặc định</label>
+                            <select name="default-payment-method">
+                                <option value="bank">Chuyển khoản ngân hàng</option>
+                                <option value="paypal">PayPal</option>
+                                <option value="crypto">Cryptocurrency</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Chu kỳ thanh toán</label>
+                            <select name="payment-cycle">
+                                <option value="weekly">Hàng tuần</option>
+                                <option value="monthly" selected>Hàng tháng</option>
+                                <option value="quarterly">Hàng quý</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Ngày thanh toán trong tháng</label>
+                            <input type="number" name="payment-day" value="1" min="1" max="28">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Cài đặt thông báo</h3>
+                    <form id="notification-settings">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="email-notifications" checked>
+                                Thông báo qua email
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="campaign-alerts" checked>
+                                Cảnh báo chiến dịch
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="payment-reminders" checked>
+                                Nhắc nhở thanh toán
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Email thông báo</label>
+                            <input type="email" name="notification-email" value="marketing@hipet.vn">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- New Campaign Modal -->
+    <div class="modal" id="new-campaign-modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Tạo chiến dịch quảng cáo mới</h3>
+                <span class="close" onclick="closeModal('new-campaign-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="new-campaign-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="campaign-name">Tên chiến dịch *</label>
+                            <input type="text" id="campaign-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="advertiser-select">Nhà quảng cáo *</label>
+                            <select id="advertiser-select" name="advertiserId" required>
+                                <option value="">Chọn nhà quảng cáo</option>
+                                <!-- Options will be loaded dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="campaign-type">Loại quảng cáo *</label>
+                            <select id="campaign-type" name="type" required>
+                                <option value="">Chọn loại</option>
+                                <option value="banner">Banner</option>
+                                <option value="sidebar">Sidebar</option>
+                                <option value="floating">Floating</option>
+                                <option value="sponsored">Sponsored Post</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ad-position">Vị trí hiển thị *</label>
+                            <select id="ad-position" name="position" required>
+                                <option value="">Chọn vị trí</option>
+                                <!-- Options will be populated based on campaign type -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="start-date">Ngày bắt đầu *</label>
+                            <input type="date" id="start-date" name="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="end-date">Ngày kết thúc *</label>
+                            <input type="date" id="end-date" name="endDate" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="daily-budget">Ngân sách hàng ngày (VNĐ) *</label>
+                            <input type="number" id="daily-budget" name="dailyBudget" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="total-budget">Tổng ngân sách (VNĐ)</label>
+                            <input type="number" id="total-budget" name="totalBudget" min="0" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="campaign-description">Mô tả chiến dịch</label>
+                        <textarea id="campaign-description" name="description" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ad-content">Nội dung quảng cáo *</label>
+                        <div class="ad-upload-area">
+                            <input type="file" id="ad-content" name="adContent" accept="image/*,video/*" required>
+                            <div class="upload-placeholder">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Kéo thả file hoặc click để chọn</p>
+                                <small>Hỗ trợ: JPG, PNG, GIF, MP4 (Max: 10MB)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="target-url">URL đích</label>
+                        <input type="url" id="target-url" name="targetUrl" placeholder="https://example.com">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal('new-campaign-modal')">Hủy</button>
+                <button type="submit" form="new-campaign-form" class="btn-primary">Tạo chiến dịch</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Đang xử lý...</p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="../assets/js/marketing-login.js"></script>
+    <script src="../assets/js/marketing.js"></script>
+</body>
+</html>
